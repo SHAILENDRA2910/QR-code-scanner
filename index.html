@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Event Entry · Gate Scanner</title>
+    <title>Event Entry · Gold Squirrel</title>
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#070C1A" />
+    <meta name="theme-color" content="#F8F3EB" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
-    <!-- QR Library (ZXing fallback) -->
+    <!-- QR Library (ZXing) -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js">
     </script>
 
@@ -24,23 +24,27 @@
         }
 
         :root {
-            --bg-deep: #070C1A;
-            --bg-card: rgba(255, 255, 255, 0.04);
-            --border-glass: rgba(255, 255, 255, 0.06);
-            --text-primary: #F1F5F9;
-            --text-secondary: #94A3B8;
-            --text-muted: #475569;
+            /* Light, warm, company-friendly palette */
+            --bg-primary: #FBF8F4;        /* soft ivory */
+            --bg-card: #FFFFFF;
+            --bg-card-hover: #F5F0EA;
+            --border-light: #E5DDD3;
+            --text-primary: #2C241A;      /* warm dark */
+            --text-secondary: #6B5F4E;
+            --text-muted: #A69682;
 
-            --gate1-primary: #2DD4BF;
-            --gate1-glow: rgba(45, 212, 191, 0.25);
-            --gate1-bg: rgba(45, 212, 191, 0.08);
+            --gate1-primary: #B88A4B;      /* gold / squirrel */
+            --gate1-glow: rgba(184, 138, 75, 0.20);
+            --gate1-bg: rgba(184, 138, 75, 0.08);
 
-            --gate2-primary: #FBBF24;
-            --gate2-glow: rgba(251, 191, 36, 0.25);
-            --gate2-bg: rgba(251, 191, 36, 0.08);
+            --gate2-primary: #8F7A5C;      ·-- warm earth
+            --gate2-glow: rgba(143, 122, 92, 0.20);
+            --gate2-bg: rgba(143, 122, 92, 0.08);
 
-            --radius-lg: 32px;
-            --radius-md: 20px;
+            --accent-gold: #C69C5A;
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
+            --radius-lg: 28px;
+            --radius-md: 18px;
             --radius-sm: 14px;
             --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -51,7 +55,7 @@
             height: 100%;
             overflow: hidden;
             font-family: var(--font);
-            background: var(--bg-deep);
+            background: var(--bg-primary);
             color: var(--text-primary);
             -webkit-tap-highlight-color: transparent;
             user-select: none;
@@ -65,32 +69,21 @@
             height: 100dvh;
             max-width: 480px;
             margin: 0 auto;
-            padding: 20px 18px 28px;
-            background: radial-gradient(ellipse at 50% 0%, #111D33 0%, #070C1A 80%);
+            padding: 18px 16px 24px;
+            background: var(--bg-primary);
             position: relative;
             overflow: hidden;
         }
 
-        /* Ambient glow */
+        /* subtle warm glow */
         #app::before {
             content: '';
             position: absolute;
-            top: -15%;
-            right: -30%;
-            width: 80%;
-            height: 50%;
-            background: radial-gradient(circle, rgba(45, 212, 191, 0.05) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        #app::after {
-            content: '';
-            position: absolute;
-            bottom: -10%;
-            left: -30%;
-            width: 80%;
-            height: 50%;
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.04) 0%, transparent 70%);
+            top: -20%;
+            right: -20%;
+            width: 70%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(184, 138, 75, 0.05) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
@@ -111,7 +104,7 @@
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(12px);
             }
             to {
                 opacity: 1;
@@ -119,40 +112,52 @@
             }
         }
 
-        /* ───────────── HEADER ───────────── */
+        /* ───────────── HEADER (brand) ───────────── */
         .app-header {
             display: flex;
             align-items: center;
             gap: 14px;
-            padding-bottom: 18px;
+            padding-bottom: 14px;
             flex-shrink: 0;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 10px;
         }
+
         .logo-wrapper {
             flex-shrink: 0;
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             border-radius: 14px;
-            background: linear-gradient(135deg, #2DD4BF, #0EA5E9);
+            background: #FDF9F4;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-sm);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 20px rgba(45, 212, 191, 0.25);
+            padding: 6px;
         }
-        .logo-wrapper svg {
-            width: 62%;
-            height: 62%;
+        .logo-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
         }
+
         .header-text h1 {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             letter-spacing: -0.3px;
-            color: #fff;
+            color: var(--text-primary);
         }
         .header-text .sub {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 500;
             color: var(--text-secondary);
             letter-spacing: 0.2px;
+        }
+        .brand-gold {
+            color: var(--accent-gold);
+            font-weight: 700;
         }
 
         /* ───────────── DASHBOARD ───────────── */
@@ -161,29 +166,28 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 20px;
+            gap: 18px;
             padding: 8px 0;
         }
 
         .gate-card {
             background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border-light);
             border-radius: var(--radius-md);
-            padding: 20px 24px 18px;
+            padding: 20px 22px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: all var(--transition);
+            box-shadow: var(--shadow-sm);
             position: relative;
-            overflow: hidden;
-            min-height: 100px;
+            min-height: 90px;
         }
         .gate-card.gate-1 {
-            border-left: 4px solid var(--gate1-primary);
+            border-left: 5px solid var(--gate1-primary);
         }
         .gate-card.gate-2 {
-            border-left: 4px solid var(--gate2-primary);
+            border-left: 5px solid var(--gate2-primary);
         }
 
         .gate-card .info {
@@ -192,10 +196,10 @@
             gap: 2px;
         }
         .gate-card .gate-label {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.6px;
             color: var(--text-secondary);
         }
         .gate-card .gate-count {
@@ -218,8 +222,8 @@
         }
 
         .gate-card .action-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-glass);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
             color: var(--text-primary);
             padding: 10px 18px;
             border-radius: 40px;
@@ -229,26 +233,24 @@
             transition: all var(--transition);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             white-space: nowrap;
-            min-width: 120px;
+            min-width: 110px;
             justify-content: center;
         }
         .gate-card .action-btn:active {
             transform: scale(0.94);
-        }
-        .gate-card .action-btn .icon {
-            font-size: 18px;
+            background: var(--bg-card-hover);
         }
         .gate-card.gate-1 .action-btn:active {
-            background: var(--gate1-bg);
             border-color: var(--gate1-primary);
             color: var(--gate1-primary);
+            background: var(--gate1-bg);
         }
         .gate-card.gate-2 .action-btn:active {
-            background: var(--gate2-bg);
             border-color: var(--gate2-primary);
             color: var(--gate2-primary);
+            background: var(--gate2-bg);
         }
 
         /* Dashboard footer */
@@ -258,8 +260,10 @@
             align-items: center;
             padding-top: 14px;
             flex-shrink: 0;
-            border-top: 1px solid var(--border-glass);
-            margin-top: 4px;
+            border-top: 1px solid var(--border-light);
+            margin-top: 6px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
         .total-display {
             display: flex;
@@ -274,17 +278,26 @@
         .total-display .number {
             font-size: 28px;
             font-weight: 800;
-            color: #60A5FA;
+            color: var(--gate1-primary);
             font-variant-numeric: tabular-nums;
         }
-        .dash-footer .last-sync {
+        .dash-footer .status-badge {
             font-size: 11px;
-            color: var(--text-muted);
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 30px;
+            background: #E8F0E6;
+            color: #2A6B3A;
+            border: 1px solid #C6DCC2;
         }
-
+        .dash-footer .status-badge.offline {
+            background: #F5E8E6;
+            color: #A34A3A;
+            border-color: #E5CBC6;
+        }
         .reset-all-btn {
             background: transparent;
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border-light);
             color: var(--text-muted);
             padding: 6px 16px;
             border-radius: 30px;
@@ -295,9 +308,9 @@
             letter-spacing: 0.3px;
         }
         .reset-all-btn:active {
-            background: rgba(239, 68, 68, 0.08);
-            border-color: rgba(239, 68, 68, 0.2);
-            color: #EF4444;
+            background: rgba(180, 80, 60, 0.06);
+            border-color: rgba(180, 80, 60, 0.2);
+            color: #B4503C;
         }
 
         /* ───────────── GATE VIEW ───────────── */
@@ -305,14 +318,14 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding-bottom: 14px;
+            padding-bottom: 12px;
             flex-shrink: 0;
-            border-bottom: 1px solid var(--border-glass);
-            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+            margin-bottom: 14px;
         }
         .back-btn {
             background: var(--bg-card);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border-light);
             color: var(--text-secondary);
             width: 44px;
             height: 44px;
@@ -323,6 +336,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: var(--shadow-sm);
         }
         .back-btn:active {
             transform: scale(0.90);
@@ -352,8 +366,8 @@
             border-radius: 20px;
         }
         .gate-reset-btn:active {
-            background: rgba(239, 68, 68, 0.1);
-            color: #EF4444;
+            background: rgba(180, 80, 60, 0.05);
+            color: #B4503C;
         }
 
         /* Count + Last Scan row */
@@ -362,13 +376,14 @@
             align-items: center;
             gap: 16px;
             background: var(--bg-card);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border-light);
             border-radius: var(--radius-sm);
-            padding: 14px 20px;
+            padding: 14px 18px;
             flex-shrink: 0;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             justify-content: space-between;
             flex-wrap: wrap;
+            box-shadow: var(--shadow-sm);
         }
         .count-stats .main-count {
             display: flex;
@@ -413,14 +428,15 @@
         .scanner-wrapper {
             flex: 1;
             min-height: 200px;
-            background: #0A0F1E;
+            background: #F2EDE6;
             border-radius: var(--radius-sm);
             overflow: hidden;
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border-light);
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
         }
         #scanner-container {
             width: 100%;
@@ -441,13 +457,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             color: var(--text-muted);
             font-size: 14px;
             font-weight: 500;
-            background: #0A0F1E;
+            background: #F2EDE6;
             z-index: 2;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.3s ease;
             padding: 20px;
             text-align: center;
         }
@@ -456,8 +472,8 @@
             pointer-events: none;
         }
         .scanner-placeholder .big-icon {
-            font-size: 48px;
-            opacity: 0.3;
+            font-size: 44px;
+            opacity: 0.4;
         }
         .scanner-placeholder .sub {
             font-size: 12px;
@@ -472,36 +488,16 @@
         }
         .scanner-overlay .corner {
             position: absolute;
-            width: 22px;
-            height: 22px;
-            border-color: rgba(255, 255, 255, 0.4);
+            width: 24px;
+            height: 24px;
+            border-color: rgba(44, 36, 26, 0.3);
             border-style: solid;
             border-width: 0;
         }
-        .scanner-overlay .corner.tl {
-            top: 18px;
-            left: 18px;
-            border-top-width: 3px;
-            border-left-width: 3px;
-        }
-        .scanner-overlay .corner.tr {
-            top: 18px;
-            right: 18px;
-            border-top-width: 3px;
-            border-right-width: 3px;
-        }
-        .scanner-overlay .corner.bl {
-            bottom: 18px;
-            left: 18px;
-            border-bottom-width: 3px;
-            border-left-width: 3px;
-        }
-        .scanner-overlay .corner.br {
-            bottom: 18px;
-            right: 18px;
-            border-bottom-width: 3px;
-            border-right-width: 3px;
-        }
+        .scanner-overlay .corner.tl { top: 16px; left: 16px; border-top-width: 3px; border-left-width: 3px; }
+        .scanner-overlay .corner.tr { top: 16px; right: 16px; border-top-width: 3px; border-right-width: 3px; }
+        .scanner-overlay .corner.bl { bottom: 16px; left: 16px; border-bottom-width: 3px; border-left-width: 3px; }
+        .scanner-overlay .corner.br { bottom: 16px; right: 16px; border-bottom-width: 3px; border-right-width: 3px; }
 
         .scan-toggle-btn {
             width: 100%;
@@ -517,16 +513,14 @@
             justify-content: center;
             gap: 10px;
             background: var(--bg-card);
-            border: 1px solid var(--border-glass);
+            border: 1px solid var(--border-light);
             color: var(--text-primary);
             flex-shrink: 0;
-            margin-top: 14px;
+            margin-top: 12px;
+            box-shadow: var(--shadow-sm);
         }
         .scan-toggle-btn:active {
             transform: scale(0.97);
-        }
-        .scan-toggle-btn.open {
-            background: rgba(255, 255, 255, 0.06);
         }
         .scan-toggle-btn.open:active {
             background: var(--bg-card-hover);
@@ -551,7 +545,7 @@
             inset: 0;
             pointer-events: none;
             z-index: 999;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.12);
             opacity: 0;
             transition: opacity 0.08s ease;
         }
@@ -559,30 +553,30 @@
             opacity: 1;
         }
         .flash-overlay.green {
-            background: rgba(45, 212, 191, 0.2);
+            background: rgba(184, 138, 75, 0.15);
         }
         .flash-overlay.gold {
-            background: rgba(251, 191, 36, 0.2);
+            background: rgba(143, 122, 92, 0.15);
         }
         .flash-overlay.red {
-            background: rgba(239, 68, 68, 0.2);
+            background: rgba(190, 70, 50, 0.15);
         }
 
         .toast {
             position: fixed;
-            bottom: 110px;
+            bottom: 100px;
             left: 50%;
             transform: translateX(-50%) translateY(24px);
             z-index: 1000;
-            background: rgba(15, 23, 42, 0.92);
-            backdrop-filter: blur(16px);
+            background: rgba(255, 250, 244, 0.94);
+            backdrop-filter: blur(12px);
             padding: 14px 28px;
             border-radius: 40px;
-            color: #fff;
+            color: var(--text-primary);
             font-size: 15px;
             font-weight: 600;
-            border: 1px solid var(--border-glass);
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--border-light);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
             opacity: 0;
             transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
@@ -607,88 +601,46 @@
         .toast .badge.g1 {
             background: var(--gate1-bg);
             color: var(--gate1-primary);
-            border: 1px solid rgba(45, 212, 191, 0.2);
+            border: 1px solid rgba(184,138,75,0.2);
         }
         .toast .badge.g2 {
             background: var(--gate2-bg);
             color: var(--gate2-primary);
-            border: 1px solid rgba(251, 191, 36, 0.2);
+            border: 1px solid rgba(143,122,92,0.2);
         }
         .toast .badge.err {
-            background: rgba(239, 68, 68, 0.15);
-            color: #EF4444;
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            background: rgba(190, 70, 50, 0.08);
+            color: #B4503C;
+            border: 1px solid rgba(190,70,50,0.15);
         }
 
         /* ───────────── BOUNCE ───────────── */
         @keyframes countBounce {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.25);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
         .bounce {
             animation: countBounce 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* ───────────── RESPONSIVE ───────────── */
         @media (max-width: 420px) {
-            #app {
-                padding: 14px 12px 20px;
-            }
-            .gate-card {
-                padding: 16px 18px;
-                min-height: 80px;
-            }
-            .gate-card .gate-count {
-                font-size: 34px;
-            }
-            .gate-card .action-btn {
-                font-size: 12px;
-                padding: 8px 14px;
-                min-width: 90px;
-            }
-            .count-stats .main-count .num {
-                font-size: 34px;
-            }
-            .scan-toggle-btn {
-                font-size: 15px;
-                padding: 14px;
-            }
-            .total-display .number {
-                font-size: 22px;
-            }
+            #app { padding: 12px 10px 16px; }
+            .gate-card { padding: 14px 16px; min-height: 72px; }
+            .gate-card .gate-count { font-size: 32px; }
+            .gate-card .action-btn { font-size: 12px; padding: 8px 12px; min-width: 80px; }
+            .count-stats .main-count .num { font-size: 32px; }
+            .scan-toggle-btn { font-size: 15px; padding: 14px; }
+            .total-display .number { font-size: 22px; }
         }
-
         @media (max-height: 680px) {
-            .gate-card {
-                min-height: 64px;
-                padding: 12px 16px;
-            }
-            .gate-card .gate-count {
-                font-size: 28px;
-            }
-            .count-stats {
-                padding: 10px 16px;
-            }
-            .count-stats .main-count .num {
-                font-size: 28px;
-            }
-            .scanner-wrapper {
-                min-height: 120px;
-            }
-            .app-header {
-                padding-bottom: 10px;
-            }
-            .gate-view-header {
-                padding-bottom: 10px;
-                margin-bottom: 10px;
-            }
+            .gate-card { min-height: 60px; padding: 10px 14px; }
+            .gate-card .gate-count { font-size: 26px; }
+            .count-stats { padding: 8px 14px; }
+            .count-stats .main-count .num { font-size: 26px; }
+            .scanner-wrapper { min-height: 120px; }
+            .app-header { padding-bottom: 8px; margin-bottom: 6px; }
+            .gate-view-header { padding-bottom: 8px; margin-bottom: 8px; }
         }
     </style>
 </head>
@@ -701,27 +653,15 @@
     <!-- ─── APP ─── -->
     <div id="app">
 
-        <!-- ========================================== -->
         <!-- DASHBOARD VIEW -->
-        <!-- ========================================== -->
         <div id="dashboard-view" class="view active">
             <header class="app-header">
                 <div class="logo-wrapper">
-                    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="100" height="100" rx="24" fill="url(#logoGrad)" />
-                        <path d="M30 70 L30 40 L50 25 L70 40 L70 70 L50 85 L30 70Z" stroke="white" stroke-width="4.5" fill="none" stroke-linejoin="round" />
-                        <path d="M42 55 L50 63 L62 50" stroke="white" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <defs>
-                            <linearGradient id="logoGrad" x1="0" y1="0" x2="100" y2="100">
-                                <stop offset="0%" stop-color="#2DD4BF" />
-                                <stop offset="100%" stop-color="#0EA5E9" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
+                    <img src="logo.png" alt="Gold Squirrel Studio" style="width:100%; height:100%; object-fit:contain;" />
                 </div>
                 <div class="header-text">
-                    <h1>Event Entry</h1>
-                    <div class="sub">Live People Counter</div>
+                    <h1>Gold Squirrel <span class="brand-gold">Studio</span></h1>
+                    <div class="sub">Event Entry · Live Counter</div>
                 </div>
             </header>
 
@@ -756,23 +696,19 @@
                     <span class="label">Total</span>
                     <span class="number" id="dash-total">0</span>
                 </div>
-                <div class="last-sync" id="dash-sync">Last sync: now</div>
+                <span class="status-badge" id="onlineBadge">● Online</span>
                 <button class="reset-all-btn" onclick="resetAll()">⟳ Reset</button>
             </div>
         </div>
 
-        <!-- ========================================== -->
         <!-- GATE VIEW (shared) -->
-        <!-- ========================================== -->
         <div id="gate-view" class="view">
-            <!-- Header -->
             <div class="gate-view-header">
                 <button class="back-btn" onclick="closeGateView()">←</button>
                 <div class="gate-view-title" id="gateViewTitle">Gate <span id="gateTitleNum" class="g1">1</span></div>
                 <button class="gate-reset-btn" onclick="resetCurrentGate()">↺ Reset</button>
             </div>
 
-            <!-- Count + Last Scan -->
             <div class="count-stats">
                 <div class="main-count">
                     <span class="num" id="gateCountNum">0</span>
@@ -784,7 +720,6 @@
                 </div>
             </div>
 
-            <!-- Scanner -->
             <div class="scanner-wrapper" id="scannerWrapper">
                 <div id="scanner-container"></div>
                 <div class="scanner-overlay">
@@ -800,40 +735,51 @@
                 </div>
             </div>
 
-            <!-- Toggle Button -->
             <button class="scan-toggle-btn open" id="scanToggleBtn" onclick="toggleScanner()">
                 <span class="icon">📷</span> Open Camera
             </button>
         </div>
-
     </div>
 
     <script>
         /* ──────────────────────────────────────────────────────────
-           STATE
+           STATE — now with central‑backend ready logic.
+           Duplicate prevention: QR‑based, not gate‑based.
            ────────────────────────────────────────────────────────── */
         let gate1Count = parseInt(localStorage.getItem('event_gate1') || '0');
         let gate2Count = parseInt(localStorage.getItem('event_gate2') || '0');
 
-        // Last scan data
+        // Last scan data (per gate for UI)
         let lastScans = {
-            1: { qr: localStorage.getItem('event_lastQR_1') || null, time: localStorage.getItem('event_lastTime_1') ||
-                    null },
-            2: { qr: localStorage.getItem('event_lastQR_2') || null, time: localStorage.getItem('event_lastTime_2') ||
-                    null }
+            1: { qr: localStorage.getItem('event_lastQR_1') || null, time: localStorage.getItem('event_lastTime_1') || null },
+            2: { qr: localStorage.getItem('event_lastQR_2') || null, time: localStorage.getItem('event_lastTime_2') || null }
         };
+
+        // Global scanned set (QR‑based, not gate‑based)
+        let scannedSet = new Set();
+
+        // Load previously scanned QR codes from localStorage (global)
+        function loadGlobalScanned() {
+            const stored = localStorage.getItem('global_scanned_qrs');
+            if (stored) {
+                try {
+                    const arr = JSON.parse(stored);
+                    arr.forEach(qr => scannedSet.add(qr));
+                } catch (_) {}
+            }
+        }
+        loadGlobalScanned();
+
+        function persistGlobalScanned() {
+            localStorage.setItem('global_scanned_qrs', JSON.stringify(Array.from(scannedSet)));
+        }
 
         let currentGate = 1;
         let isScannerRunning = false;
         let html5QrCode = null;
         let scanCooldown = false;
 
-        // Track scanned QR codes to prevent duplicates in current session
-        let scannedSet = new Set();
-
-        /* ──────────────────────────────────────────────────────────
-           DOM REFS
-           ────────────────────────────────────────────────────────── */
+        // DOM refs
         const $ = id => document.getElementById(id);
         const dashView = $('dashboard-view');
         const gateView = $('gate-view');
@@ -842,7 +788,6 @@
         const dashLast1 = $('dash-last-1');
         const dashLast2 = $('dash-last-2');
         const dashTotal = $('dash-total');
-        const dashSync = $('dash-sync');
         const gateTitleNum = $('gateTitleNum');
         const gateCountNum = $('gateCountNum');
         const lastQRId = $('lastQRId');
@@ -851,36 +796,30 @@
         const scanToggleBtn = $('scanToggleBtn');
         const flashOverlay = $('flashOverlay');
         const toast = $('toast');
+        const onlineBadge = $('onlineBadge');
 
-        /* ──────────────────────────────────────────────────────────
-           UI UPDATE
-           ────────────────────────────────────────────────────────── */
+        // ─── UI UPDATE ───
         function updateAllUI() {
-            // Dashboard
             dashCount1.textContent = gate1Count;
             dashCount2.textContent = gate2Count;
             dashTotal.textContent = gate1Count + gate2Count;
 
-            const fmtTime = (ts) => ts ? new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',
-                second: '2-digit' }) : '—';
+            const fmtTime = (ts) => ts ? new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
             dashLast1.textContent = `Last scan: ${lastScans[1].qr ? fmtTime(lastScans[1].time) : '—'}`;
             dashLast2.textContent = `Last scan: ${lastScans[2].qr ? fmtTime(lastScans[2].time) : '—'}`;
 
-            // Gate view
             const count = currentGate === 1 ? gate1Count : gate2Count;
             gateCountNum.textContent = count;
             gateCountNum.className = 'num ' + (currentGate === 1 ? 'g1' : 'g2');
 
             const last = lastScans[currentGate];
             lastQRId.textContent = last.qr || '—';
-            lastQRTime.textContent = last.time ? new Date(last.time).toLocaleTimeString([], { hour: '2-digit',
-                minute: '2-digit', second: '2-digit' }) : 'No scans yet';
+            lastQRTime.textContent = last.time ? new Date(last.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'No scans yet';
 
-            // Gate title
             gateTitleNum.textContent = currentGate;
             gateTitleNum.className = currentGate === 1 ? 'g1' : 'g2';
 
-            // Persist
+            // Persist counters & last scan
             localStorage.setItem('event_gate1', String(gate1Count));
             localStorage.setItem('event_gate2', String(gate2Count));
             localStorage.setItem('event_lastQR_1', lastScans[1].qr || '');
@@ -888,7 +827,10 @@
             localStorage.setItem('event_lastQR_2', lastScans[2].qr || '');
             localStorage.setItem('event_lastTime_2', lastScans[2].time || '');
 
-            dashSync.textContent = `Last sync: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            // Online badge (simulated, can be toggled manually for demo)
+            // we keep it always online for frontend demo
+            onlineBadge.textContent = '● Online';
+            onlineBadge.className = 'status-badge';
         }
 
         function bounceCount() {
@@ -897,13 +839,10 @@
             gateCountNum.classList.add('bounce');
         }
 
-        /* ──────────────────────────────────────────────────────────
-           NAVIGATION
-           ────────────────────────────────────────────────────────── */
+        // ─── NAVIGATION ───
         function openGateView(gate) {
             if (isScannerRunning) stopScannerSync();
             currentGate = gate;
-            // Reset scanner UI
             scannerPlaceholder.classList.remove('hidden');
             scanToggleBtn.innerHTML = '<span class="icon">📷</span> Open Camera';
             scanToggleBtn.className = 'scan-toggle-btn open';
@@ -920,9 +859,7 @@
             updateAllUI();
         }
 
-        /* ──────────────────────────────────────────────────────────
-           SCANNER ENGINE
-           ────────────────────────────────────────────────────────── */
+        // ─── SCANNER ───
         async function toggleScanner() {
             if (isScannerRunning) {
                 stopScannerSync();
@@ -937,11 +874,7 @@
                 if (!html5QrCode) {
                     html5QrCode = new Html5Qrcode('scanner-container');
                 }
-                const config = {
-                    fps: 15,
-                    qrbox: { width: 240, height: 240 },
-                    aspectRatio: 1.0
-                };
+                const config = { fps: 15, qrbox: { width: 240, height: 240 }, aspectRatio: 1.0 };
                 await html5QrCode.start({ facingMode: 'environment' }, config, onScanSuccess, onScanError);
                 isScannerRunning = true;
                 scannerPlaceholder.classList.add('hidden');
@@ -952,17 +885,14 @@
 
                 showToast('Camera ready', null, 600);
             } catch (err) {
-                console.warn('Camera error:', err);
+                console.warn(err);
                 alert('Unable to access camera. Please check permissions.');
             }
         }
 
         function stopScannerSync() {
             if (html5QrCode && isScannerRunning) {
-                try {
-                    html5QrCode.stop();
-                    html5QrCode.clear();
-                } catch (_) {}
+                try { html5QrCode.stop(); html5QrCode.clear(); } catch (_) {}
                 isScannerRunning = false;
                 scannerPlaceholder.classList.remove('hidden');
                 scanToggleBtn.innerHTML = '<span class="icon">📷</span> Open Camera';
@@ -970,65 +900,55 @@
             }
         }
 
-        /* ──────────────────────────────────────────────────────────
-           SCAN HANDLER
-           ────────────────────────────────────────────────────────── */
+        // ─── SCAN HANDLER (backend‑ready) ───
         function onScanSuccess(decodedText, decodedResult) {
             if (scanCooldown) return;
             scanCooldown = true;
 
             const qr = decodedText.trim();
 
-            // --- Duplicate check (permanent via localStorage) ---
-            const dupKey = `scanned_${currentGate}_${qr}`;
-            if (localStorage.getItem(dupKey) === 'true') {
+            // ---- GLOBAL duplicate check (QR‑based, not gate‑based) ----
+            if (scannedSet.has(qr)) {
                 flashScreen('red');
-                showToast('Already scanned', 'err', 1200);
+                // show which gate first scanned? we can show from lastScans but we keep simple
+                showToast('Already scanned (global)', 'err', 1200);
                 scanCooldown = false;
                 setTimeout(() => { scanCooldown = false; }, 300);
                 return;
             }
 
-            // --- Valid scan ---
+            // ---- Valid scan: increment gate counter ----
             if (currentGate === 1) gate1Count++;
             else gate2Count++;
 
-            // Store as scanned
-            localStorage.setItem(dupKey, 'true');
+            // Add to global set & persist
+            scannedSet.add(qr);
+            persistGlobalScanned();
 
             // Update last scan
             lastScans[currentGate] = { qr: qr, time: new Date().toISOString() };
 
             updateAllUI();
             bounceCount();
-
             flashScreen(currentGate);
             if (navigator.vibrate) navigator.vibrate(30);
             showToast('✓ Entry recorded', currentGate, 900);
 
-            // --- Auto-close camera after scan (high-throughput style) ---            // We close after a short delay so operator can see the flash/feedback.
+            // Auto‑close camera after scan (operator flow)
             setTimeout(() => {
                 if (isScannerRunning) {
                     stopScannerSync();
-                    // Show a quick "Camera closed" toast
                     showToast('Camera closed — ready for next', null, 600);
                 }
             }, 500);
 
-            setTimeout(() => {
-                scanCooldown = false;
-            }, 400);
+            setTimeout(() => { scanCooldown = false; }, 400);
         }
 
-        function onScanError(err) {
-            // ignore
-        }
+        function onScanError(err) { /* ignore */ }
 
-        /* ──────────────────────────────────────────────────────────
-           RESET FUNCTIONS
-           ────────────────────────────────────────────────────────── */
+        // ─── RESET ───
         function resetCurrentGate() {
-            const key = currentGate === 1 ? 'gate1' : 'gate2';
             const count = currentGate === 1 ? gate1Count : gate2Count;
             if (count === 0) return;
             if (!confirm(`Reset Gate ${currentGate} counter?`)) return;
@@ -1036,12 +956,8 @@
             if (currentGate === 1) gate1Count = 0;
             else gate2Count = 0;
 
-            // Clear stored scanned records for this gate
-            const prefix = `scanned_${currentGate}_`;
-            Object.keys(localStorage).forEach(k => {
-                if (k.startsWith(prefix)) localStorage.removeItem(k);
-            });
-
+            // For gate reset we keep global scanned set, but we could also clear?
+            // We keep global set untouched to preserve duplicate prevention.
             lastScans[currentGate] = { qr: null, time: null };
             updateAllUI();
             showToast(`Gate ${currentGate} reset`, currentGate, 1000);
@@ -1049,26 +965,20 @@
         }
 
         function resetAll() {
-            if (gate1Count === 0 && gate2Count === 0) return;
-            if (!confirm('Reset ALL counters and clear scan history?')) return;
+            if (gate1Count === 0 && gate2Count === 0 && scannedSet.size === 0) return;
+            if (!confirm('Reset ALL counters AND clear global scan history?')) return;
 
             gate1Count = 0;
             gate2Count = 0;
             lastScans = { 1: { qr: null, time: null }, 2: { qr: null, time: null } };
-
-            // Clear all scanned records
-            Object.keys(localStorage).forEach(k => {
-                if (k.startsWith('scanned_')) localStorage.removeItem(k);
-            });
-
+            scannedSet.clear();
+            persistGlobalScanned();
             updateAllUI();
-            showToast('All counters reset', null, 1200);
+            showToast('All counters & history reset', null, 1200);
             if (navigator.vibrate) navigator.vibrate(30);
         }
 
-        /* ──────────────────────────────────────────────────────────
-           FEEDBACK HELPERS
-           ────────────────────────────────────────────────────────── */
+        // ─── FEEDBACK ───
         function flashScreen(type) {
             const el = flashOverlay;
             el.className = 'flash-overlay';
@@ -1086,7 +996,7 @@
             if (badgeType) {
                 const b = document.createElement('span');
                 b.className = 'badge ' + (badgeType === 'err' ? 'err' : `g${badgeType}`);
-                b.textContent = badgeType === 'err' ? '⚠ Duplicate' : `Gate ${badgeType}`;
+                b.textContent = badgeType === 'err' ? '⛔ Duplicate' : `Gate ${badgeType}`;
                 toast.appendChild(b);
             }
             const text = document.createTextNode(message);
@@ -1096,38 +1006,23 @@
             toast._hideTimer = setTimeout(() => toast.classList.remove('show'), duration);
         }
 
-        /* ──────────────────────────────────────────────────────────
-           KEYBOARD SHORTCUTS
-           ────────────────────────────────────────────────────────── */
+        // ─── KEYBOARD ───
         document.addEventListener('keydown', (e) => {
-            if (e.key === '1') { if (dashView.classList.contains('active')) openGateView(1); } else if (e.key === '2') { if (
-                    dashView.classList.contains('active')) openGateView(2); } else if (e.key === 'Escape') { if (gateView
-                    .classList.contains('active')) closeGateView(); } else if (e.key === ' ' || e.key === 'Space') { if (
-                    gateView.classList.contains('active')) { e.preventDefault();
-                    toggleScanner(); } }
+            if (e.key === '1') { if (dashView.classList.contains('active')) openGateView(1); }
+            else if (e.key === '2') { if (dashView.classList.contains('active')) openGateView(2); }
+            else if (e.key === 'Escape') { if (gateView.classList.contains('active')) closeGateView(); }
+            else if (e.key === ' ' || e.key === 'Space') { if (gateView.classList.contains('active')) { e.preventDefault(); toggleScanner(); } }
         });
 
-        /* ──────────────────────────────────────────────────────────
-           INIT
-           ────────────────────────────────────────────────────────── */
+        // ─── INIT ───
         updateAllUI();
-        console.log(`🚪 Event Scanner ready. Gate1: ${gate1Count}, Gate2: ${gate2Count}`);
+        console.log(`🐿️ Gold Squirrel Event Scanner ready. Gate1: ${gate1Count}, Gate2: ${gate2Count}, global unique: ${scannedSet.size}`);
 
-        // Cleanup
         window.addEventListener('beforeunload', () => {
             if (html5QrCode && isScannerRunning) {
                 try { html5QrCode.stop(); } catch (_) {}
             }
         });
-
-        // Visibility change – restart scanner if it was running
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden && isScannerRunning) {
-                // If scanner was running but got paused by browser, restart
-                // We'll just re-init if needed – but our stop/start flow handles it.
-            }
-        });
     </script>
-
 </body>
 </html>
