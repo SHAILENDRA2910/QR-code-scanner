@@ -1,25 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Event Scanner · Dual Gate</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Event Entry · Gate Scanner</title>
 
     <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0B1120">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#070C1A" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    <!-- QR Scanner Library -->
+    <!-- QR Library (ZXing fallback) -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js">
     </script>
 
     <style>
         /* ───────────── RESET & BASE ───────────── */
-        *,
-        *::before,
-        *::after {
+        * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -33,12 +31,10 @@
             --text-secondary: #94A3B8;
             --text-muted: #475569;
 
-            /* Gate 1 (Cyan) */
             --gate1-primary: #2DD4BF;
             --gate1-glow: rgba(45, 212, 191, 0.25);
             --gate1-bg: rgba(45, 212, 191, 0.08);
 
-            /* Gate 2 (Amber) */
             --gate2-primary: #FBBF24;
             --gate2-glow: rgba(251, 191, 36, 0.25);
             --gate2-bg: rgba(251, 191, 36, 0.08);
@@ -46,7 +42,7 @@
             --radius-lg: 32px;
             --radius-md: 20px;
             --radius-sm: 14px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
@@ -69,7 +65,7 @@
             height: 100dvh;
             max-width: 480px;
             margin: 0 auto;
-            padding: 24px 20px 30px;
+            padding: 20px 18px 28px;
             background: radial-gradient(ellipse at 50% 0%, #111D33 0%, #070C1A 80%);
             position: relative;
             overflow: hidden;
@@ -83,7 +79,7 @@
             right: -30%;
             width: 80%;
             height: 50%;
-            background: radial-gradient(circle, rgba(45, 212, 191, 0.06) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(45, 212, 191, 0.05) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
@@ -106,7 +102,7 @@
             height: 100%;
             position: relative;
             z-index: 1;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.25s ease;
         }
         .view.active {
             display: flex;
@@ -115,7 +111,7 @@
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(12px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
@@ -123,39 +119,40 @@
             }
         }
 
-        /* ───────────── HEADER (shared) ───────────── */
+        /* ───────────── HEADER ───────────── */
         .app-header {
             display: flex;
             align-items: center;
             gap: 14px;
-            padding-bottom: 20px;
+            padding-bottom: 18px;
             flex-shrink: 0;
         }
         .logo-wrapper {
             flex-shrink: 0;
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
             background: linear-gradient(135deg, #2DD4BF, #0EA5E9);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 24px rgba(45, 212, 191, 0.3);
+            box-shadow: 0 4px 20px rgba(45, 212, 191, 0.25);
         }
         .logo-wrapper svg {
-            width: 65%;
-            height: 65%;
+            width: 62%;
+            height: 62%;
         }
         .header-text h1 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            letter-spacing: -0.4px;
+            letter-spacing: -0.3px;
             color: #fff;
         }
         .header-text .sub {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             color: var(--text-secondary);
+            letter-spacing: 0.2px;
         }
 
         /* ───────────── DASHBOARD ───────────── */
@@ -164,92 +161,140 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 24px;
-            padding: 12px 0;
+            gap: 20px;
+            padding: 8px 0;
         }
 
-        .gate-btn {
-            flex: 1;
-            min-height: 160px;
+        .gate-card {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-glass);
             border-radius: var(--radius-md);
+            padding: 20px 24px 18px;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
+            justify-content: space-between;
             transition: all var(--transition);
             position: relative;
             overflow: hidden;
+            min-height: 100px;
         }
-        .gate-btn:active {
-            transform: scale(0.96);
+        .gate-card.gate-1 {
+            border-left: 4px solid var(--gate1-primary);
+        }
+        .gate-card.gate-2 {
+            border-left: 4px solid var(--gate2-primary);
         }
 
-        .gate-btn .gate-icon {
-            font-size: 42px;
-            line-height: 1;
+        .gate-card .info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
-        .gate-btn .gate-label {
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
+        .gate-card .gate-label {
+            font-size: 14px;
+            font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
         }
-        .gate-btn .gate-sub {
-            font-size: 13px;
+        .gate-card .gate-count {
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -1px;
+        }
+        .gate-card.gate-1 .gate-count {
+            color: var(--gate1-primary);
+        }
+        .gate-card.gate-2 .gate-count {
+            color: var(--gate2-primary);
+        }
+        .gate-card .gate-sub {
+            font-size: 11px;
             color: var(--text-muted);
             font-weight: 500;
         }
 
-        /* Gate 1 Dashboard */
-        .gate-btn.gate-1 .gate-label {
+        .gate-card .action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            color: var(--text-primary);
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            min-width: 120px;
+            justify-content: center;
+        }
+        .gate-card .action-btn:active {
+            transform: scale(0.94);
+        }
+        .gate-card .action-btn .icon {
+            font-size: 18px;
+        }
+        .gate-card.gate-1 .action-btn:active {
+            background: var(--gate1-bg);
+            border-color: var(--gate1-primary);
             color: var(--gate1-primary);
         }
-        .gate-btn.gate-1 {
-            border-color: rgba(45, 212, 191, 0.15);
-        }
-        .gate-btn.gate-1:active {
-            border-color: var(--gate1-primary);
-            box-shadow: 0 0 40px rgba(45, 212, 191, 0.1);
-        }
-
-        /* Gate 2 Dashboard */
-        .gate-btn.gate-2 .gate-label {
+        .gate-card.gate-2 .action-btn:active {
+            background: var(--gate2-bg);
+            border-color: var(--gate2-primary);
             color: var(--gate2-primary);
         }
-        .gate-btn.gate-2 {
-            border-color: rgba(251, 191, 36, 0.15);
+
+        /* Dashboard footer */
+        .dash-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 14px;
+            flex-shrink: 0;
+            border-top: 1px solid var(--border-glass);
+            margin-top: 4px;
         }
-        .gate-btn.gate-2:active {
-            border-color: var(--gate2-primary);
-            box-shadow: 0 0 40px rgba(251, 191, 36, 0.1);
+        .total-display {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .total-display .label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .total-display .number {
+            font-size: 28px;
+            font-weight: 800;
+            color: #60A5FA;
+            font-variant-numeric: tabular-nums;
+        }
+        .dash-footer .last-sync {
+            font-size: 11px;
+            color: var(--text-muted);
         }
 
-        /* Dashboard Footer */
-        .dashboard-footer {
-            display: flex;
-            justify-content: flex-end;
-            padding-top: 16px;
-            flex-shrink: 0;
-        }
         .reset-all-btn {
-            background: rgba(255, 255, 255, 0.03);
+            background: transparent;
             border: 1px solid var(--border-glass);
             color: var(--text-muted);
-            padding: 8px 18px;
+            padding: 6px 16px;
             border-radius: 30px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
             letter-spacing: 0.3px;
         }
         .reset-all-btn:active {
-            transform: scale(0.92);
             background: rgba(239, 68, 68, 0.08);
             border-color: rgba(239, 68, 68, 0.2);
             color: #EF4444;
@@ -260,10 +305,10 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding-bottom: 16px;
+            padding-bottom: 14px;
             flex-shrink: 0;
             border-bottom: 1px solid var(--border-glass);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .back-btn {
             background: var(--bg-card);
@@ -285,53 +330,92 @@
         }
         .gate-view-title {
             flex: 1;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             letter-spacing: -0.3px;
         }
-        .gate-view-title .highlight-g1 {
+        .gate-view-title .g1 {
             color: var(--gate1-primary);
         }
-        .gate-view-title .highlight-g2 {
+        .gate-view-title .g2 {
             color: var(--gate2-primary);
         }
+        .gate-reset-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 20px;
+        }
+        .gate-reset-btn:active {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+        }
 
-        .gate-count-display {
+        /* Count + Last Scan row */
+        .count-stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
             background: var(--bg-card);
             border: 1px solid var(--border-glass);
             border-radius: var(--radius-sm);
-            padding: 8px 20px;
-            text-align: center;
+            padding: 14px 20px;
             flex-shrink: 0;
+            margin-bottom: 16px;
+            justify-content: space-between;
+            flex-wrap: wrap;
         }
-        .gate-count-display .count-number {
-            font-size: 52px;
+        .count-stats .main-count {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+        .count-stats .main-count .num {
+            font-size: 44px;
             font-weight: 800;
-            line-height: 1.1;
             font-variant-numeric: tabular-nums;
             transition: var(--transition);
         }
-        .gate-count-display .count-label {
+        .count-stats .main-count .num.g1 {
+            color: var(--gate1-primary);
+        }
+        .count-stats .main-count .num.g2 {
+            color: var(--gate2-primary);
+        }
+        .count-stats .main-count .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .count-stats .last-info {
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .count-stats .last-info .qr-id {
+            font-family: 'SF Mono', 'Courier New', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .count-stats .last-info .time {
             font-size: 11px;
             color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .gate-view-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* Scanner Container */
+        /* Scanner */
         .scanner-wrapper {
-            background: #000;
+            flex: 1;
+            min-height: 200px;
+            background: #0A0F1E;
             border-radius: var(--radius-sm);
             overflow: hidden;
-            aspect-ratio: 4 / 3;
-            min-height: 200px;
             border: 1px solid var(--border-glass);
             position: relative;
             display: flex;
@@ -350,53 +434,7 @@
             display: block !important;
         }
 
-        /* Scanner Overlay */
-        .scanner-overlay {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            z-index: 4;
-        }
-        .scanner-overlay .corner {
-            position: absolute;
-            width: 24px;
-            height: 24px;
-            border-color: rgba(255, 255, 255, 0.5);
-            border-style: solid;
-            border-width: 0;
-            filter: drop-shadow(0 0 8px rgba(45, 212, 191, 0.4));
-        }
-        .scanner-overlay .corner.tl {
-            top: 20px;
-            left: 20px;
-            border-top-width: 3px;
-            border-left-width: 3px;
-        }
-        .scanner-overlay .corner.tr {
-            top: 20px;
-            right: 20px;
-            border-top-width: 3px;
-            border-right-width: 3px;
-        }
-        .scanner-overlay .corner.bl {
-            bottom: 20px;
-            left: 20px;
-            border-bottom-width: 3px;
-            border-left-width: 3px;
-        }
-        .scanner-overlay .corner.br {
-            bottom: 20px;
-            right: 20px;
-            border-bottom-width: 3px;
-            border-right-width: 3px;
-        }
-
         .scanner-placeholder {
-            color: var(--text-muted);
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-            padding: 20px;
             position: absolute;
             inset: 0;
             display: flex;
@@ -404,9 +442,14 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 500;
             background: #0A0F1E;
-            z-index: 1;
-            transition: opacity 0.4s ease;
+            z-index: 2;
+            transition: opacity 0.35s ease;
+            padding: 20px;
+            text-align: center;
         }
         .scanner-placeholder.hidden {
             opacity: 0;
@@ -416,32 +459,77 @@
             font-size: 48px;
             opacity: 0.3;
         }
+        .scanner-placeholder .sub {
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 3;
+        }
+        .scanner-overlay .corner {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-color: rgba(255, 255, 255, 0.4);
+            border-style: solid;
+            border-width: 0;
+        }
+        .scanner-overlay .corner.tl {
+            top: 18px;
+            left: 18px;
+            border-top-width: 3px;
+            border-left-width: 3px;
+        }
+        .scanner-overlay .corner.tr {
+            top: 18px;
+            right: 18px;
+            border-top-width: 3px;
+            border-right-width: 3px;
+        }
+        .scanner-overlay .corner.bl {
+            bottom: 18px;
+            left: 18px;
+            border-bottom-width: 3px;
+            border-left-width: 3px;
+        }
+        .scanner-overlay .corner.br {
+            bottom: 18px;
+            right: 18px;
+            border-bottom-width: 3px;
+            border-right-width: 3px;
+        }
 
         .scan-toggle-btn {
             width: 100%;
             padding: 16px;
             border-radius: var(--radius-sm);
             border: none;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
             cursor: pointer;
             transition: all var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 10px;
             background: var(--bg-card);
             border: 1px solid var(--border-glass);
             color: var(--text-primary);
             flex-shrink: 0;
+            margin-top: 14px;
         }
         .scan-toggle-btn:active {
             transform: scale(0.97);
         }
-        .scan-toggle-btn.active {
-            background: rgba(239, 68, 68, 0.15);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #EF4444;
+        .scan-toggle-btn.open {
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .scan-toggle-btn.open:active {
+            background: var(--bg-card-hover);
         }
         .scan-toggle-btn.active-g1 {
             background: var(--gate1-bg);
@@ -453,22 +541,8 @@
             border-color: var(--gate2-primary);
             color: var(--gate2-primary);
         }
-
-        .gate-reset-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 13px;
-            font-weight: 600;
-            padding: 8px 12px;
-            cursor: pointer;
-            transition: var(--transition);
-            border-radius: 20px;
-            flex-shrink: 0;
-        }
-        .gate-reset-btn:active {
-            background: rgba(239, 68, 68, 0.1);
-            color: #EF4444;
+        .scan-toggle-btn .icon {
+            font-size: 20px;
         }
 
         /* ───────────── TOAST / FLASH ───────────── */
@@ -479,7 +553,7 @@
             z-index: 999;
             background: rgba(255, 255, 255, 0.15);
             opacity: 0;
-            transition: opacity 0.1s ease;
+            transition: opacity 0.08s ease;
         }
         .flash-overlay.show {
             opacity: 1;
@@ -490,14 +564,17 @@
         .flash-overlay.gold {
             background: rgba(251, 191, 36, 0.2);
         }
+        .flash-overlay.red {
+            background: rgba(239, 68, 68, 0.2);
+        }
 
         .toast {
             position: fixed;
-            bottom: 120px;
+            bottom: 110px;
             left: 50%;
             transform: translateX(-50%) translateY(24px);
             z-index: 1000;
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.92);
             backdrop-filter: blur(16px);
             padding: 14px 28px;
             border-radius: 40px;
@@ -507,7 +584,7 @@
             border: 1px solid var(--border-glass);
             box-shadow: 0 12px 48px rgba(0, 0, 0, 0.8);
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
             white-space: nowrap;
             display: flex;
@@ -518,7 +595,7 @@
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
-        .toast .gate-badge {
+        .toast .badge {
             display: inline-block;
             padding: 2px 14px;
             border-radius: 20px;
@@ -527,68 +604,29 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        .toast .gate-badge.g1 {
+        .toast .badge.g1 {
             background: var(--gate1-bg);
             color: var(--gate1-primary);
             border: 1px solid rgba(45, 212, 191, 0.2);
         }
-        .toast .gate-badge.g2 {
+        .toast .badge.g2 {
             background: var(--gate2-bg);
             color: var(--gate2-primary);
             border: 1px solid rgba(251, 191, 36, 0.2);
         }
-
-        /* ───────────── RESPONSIVE ───────────── */
-        @media (max-width: 420px) {
-            #app {
-                padding: 16px 14px 20px;
-            }
-            .gate-btn {
-                min-height: 120px;
-            }
-            .gate-btn .gate-icon {
-                font-size: 32px;
-            }
-            .gate-btn .gate-label {
-                font-size: 20px;
-            }
-            .gate-count-display .count-number {
-                font-size: 40px;
-            }
-            .gate-view-title {
-                font-size: 18px;
-            }
-            .scanner-wrapper {
-                min-height: 140px;
-            }
+        .toast .badge.err {
+            background: rgba(239, 68, 68, 0.15);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
-        @media (max-height: 680px) {
-            .gate-btn {
-                min-height: 80px;
-                gap: 2px;
-            }
-            .gate-btn .gate-icon {
-                font-size: 24px;
-            }
-            .gate-btn .gate-label {
-                font-size: 16px;
-            }
-            .gate-count-display .count-number {
-                font-size: 32px;
-            }
-            .scanner-wrapper {
-                min-height: 100px;
-            }
-        }
-
-        /* count bounce */
+        /* ───────────── BOUNCE ───────────── */
         @keyframes countBounce {
             0% {
                 transform: scale(1);
             }
             50% {
-                transform: scale(1.3);
+                transform: scale(1.25);
             }
             100% {
                 transform: scale(1);
@@ -596,6 +634,61 @@
         }
         .bounce {
             animation: countBounce 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ───────────── RESPONSIVE ───────────── */
+        @media (max-width: 420px) {
+            #app {
+                padding: 14px 12px 20px;
+            }
+            .gate-card {
+                padding: 16px 18px;
+                min-height: 80px;
+            }
+            .gate-card .gate-count {
+                font-size: 34px;
+            }
+            .gate-card .action-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+                min-width: 90px;
+            }
+            .count-stats .main-count .num {
+                font-size: 34px;
+            }
+            .scan-toggle-btn {
+                font-size: 15px;
+                padding: 14px;
+            }
+            .total-display .number {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-height: 680px) {
+            .gate-card {
+                min-height: 64px;
+                padding: 12px 16px;
+            }
+            .gate-card .gate-count {
+                font-size: 28px;
+            }
+            .count-stats {
+                padding: 10px 16px;
+            }
+            .count-stats .main-count .num {
+                font-size: 28px;
+            }
+            .scanner-wrapper {
+                min-height: 120px;
+            }
+            .app-header {
+                padding-bottom: 10px;
+            }
+            .gate-view-header {
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
@@ -608,9 +701,9 @@
     <!-- ─── APP ─── -->
     <div id="app">
 
-        <!-- ============================================ -->
+        <!-- ========================================== -->
         <!-- DASHBOARD VIEW -->
-        <!-- ============================================ -->
+        <!-- ========================================== -->
         <div id="dashboard-view" class="view active">
             <header class="app-header">
                 <div class="logo-wrapper">
@@ -627,154 +720,211 @@
                     </svg>
                 </div>
                 <div class="header-text">
-                    <h1>Event Scanner</h1>
-                    <div class="sub">Dual Gate · People Counter</div>
+                    <h1>Event Entry</h1>
+                    <div class="sub">Live People Counter</div>
                 </div>
             </header>
 
             <div class="dashboard-grid">
-                <button class="gate-btn gate-1" onclick="showGate(1)">
-                    <span class="gate-icon">🚪</span>
-                    <span class="gate-label">Gate 1</span>
-                    <span class="gate-sub" id="dash-count-1">0 entries</span>
-                </button>
-                <button class="gate-btn gate-2" onclick="showGate(2)">
-                    <span class="gate-icon">🚪</span>
-                    <span class="gate-label">Gate 2</span>
-                    <span class="gate-sub" id="dash-count-2">0 entries</span>
-                </button>
+                <!-- Gate 1 Card -->
+                <div class="gate-card gate-1">
+                    <div class="info">
+                        <div class="gate-label">🚪 Gate 1</div>
+                        <div class="gate-count" id="dash-count-1">0</div>
+                        <div class="gate-sub" id="dash-last-1">Last scan: —</div>
+                    </div>
+                    <button class="action-btn" onclick="openGateView(1)">
+                        <span class="icon">📷</span> Open
+                    </button>
+                </div>
+
+                <!-- Gate 2 Card -->
+                <div class="gate-card gate-2">
+                    <div class="info">
+                        <div class="gate-label">🚪 Gate 2</div>
+                        <div class="gate-count" id="dash-count-2">0</div>
+                        <div class="gate-sub" id="dash-last-2">Last scan: —</div>
+                    </div>
+                    <button class="action-btn" onclick="openGateView(2)">
+                        <span class="icon">📷</span> Open
+                    </button>
+                </div>
             </div>
 
-            <div class="dashboard-footer">
-                <button class="reset-all-btn" onclick="resetAll()">⟳ Reset All Counts</button>
+            <div class="dash-footer">
+                <div class="total-display">
+                    <span class="label">Total</span>
+                    <span class="number" id="dash-total">0</span>
+                </div>
+                <div class="last-sync" id="dash-sync">Last sync: now</div>
+                <button class="reset-all-btn" onclick="resetAll()">⟳ Reset</button>
             </div>
         </div>
 
-        <!-- ============================================ -->
-        <!-- GATE VIEW (shared template) -->
-        <!-- ============================================ -->
+        <!-- ========================================== -->
+        <!-- GATE VIEW (shared) -->
+        <!-- ========================================== -->
         <div id="gate-view" class="view">
             <!-- Header -->
             <div class="gate-view-header">
-                <button class="back-btn" onclick="showDashboard()">←</button>
-                <div class="gate-view-title" id="gateViewTitle">
-                    Gate <span id="gateTitleNum" class="highlight-g1">1</span>
-                </div>
+                <button class="back-btn" onclick="closeGateView()">←</button>
+                <div class="gate-view-title" id="gateViewTitle">Gate <span id="gateTitleNum" class="g1">1</span></div>
                 <button class="gate-reset-btn" onclick="resetCurrentGate()">↺ Reset</button>
             </div>
 
-            <!-- Count Display -->
-            <div class="gate-count-display">
-                <div class="count-number" id="gateCountDisplay">0</div>
-                <div class="count-label">People Counted</div>
-            </div>
-
-            <!-- Scanner & Controls -->
-            <div class="gate-view-body">
-                <div class="scanner-wrapper" id="scannerWrapper">
-                    <div id="scanner-container"></div>
-                    <div class="scanner-overlay">
-                        <div class="corner tl"></div>
-                        <div class="corner tr"></div>
-                        <div class="corner bl"></div>
-                        <div class="corner br"></div>
-                    </div>
-                    <div class="scanner-placeholder" id="scannerPlaceholder">
-                        <span class="big-icon">📷</span>
-                        <span>Camera is off</span>
-                        <span style="font-size:12px; opacity:0.6;">Tap "Open Camera" below</span>
-                    </div>
+            <!-- Count + Last Scan -->
+            <div class="count-stats">
+                <div class="main-count">
+                    <span class="num" id="gateCountNum">0</span>
+                    <span class="label">people</span>
                 </div>
-
-                <button class="scan-toggle-btn" id="scanToggleBtn" onclick="toggleScanner()">
-                    <span>📷</span> Open Camera
-                </button>
+                <div class="last-info">
+                    <div class="qr-id" id="lastQRId">—</div>
+                    <div class="time" id="lastQRTime">No scans yet</div>
+                </div>
             </div>
+
+            <!-- Scanner -->
+            <div class="scanner-wrapper" id="scannerWrapper">
+                <div id="scanner-container"></div>
+                <div class="scanner-overlay">
+                    <div class="corner tl"></div>
+                    <div class="corner tr"></div>
+                    <div class="corner bl"></div>
+                    <div class="corner br"></div>
+                </div>
+                <div class="scanner-placeholder" id="scannerPlaceholder">
+                    <span class="big-icon">📷</span>
+                    <span>Camera is off</span>
+                    <span class="sub">Tap "Open Camera" below</span>
+                </div>
+            </div>
+
+            <!-- Toggle Button -->
+            <button class="scan-toggle-btn open" id="scanToggleBtn" onclick="toggleScanner()">
+                <span class="icon">📷</span> Open Camera
+            </button>
         </div>
 
     </div>
 
     <script>
-        /* ───────────────────────────────────────────────────────
+        /* ──────────────────────────────────────────────────────────
            STATE
-           ─────────────────────────────────────────────────────── */
+           ────────────────────────────────────────────────────────── */
         let gate1Count = parseInt(localStorage.getItem('event_gate1') || '0');
         let gate2Count = parseInt(localStorage.getItem('event_gate2') || '0');
-        let currentGate = 1; // 1 or 2
-        let isScanning = false;
+
+        // Last scan data
+        let lastScans = {
+            1: { qr: localStorage.getItem('event_lastQR_1') || null, time: localStorage.getItem('event_lastTime_1') ||
+                    null },
+            2: { qr: localStorage.getItem('event_lastQR_2') || null, time: localStorage.getItem('event_lastTime_2') ||
+                    null }
+        };
+
+        let currentGate = 1;
+        let isScannerRunning = false;
         let html5QrCode = null;
         let scanCooldown = false;
 
-        /* ───────────────────────────────────────────────────────
+        // Track scanned QR codes to prevent duplicates in current session
+        let scannedSet = new Set();
+
+        /* ──────────────────────────────────────────────────────────
            DOM REFS
-           ─────────────────────────────────────────────────────── */
+           ────────────────────────────────────────────────────────── */
         const $ = id => document.getElementById(id);
         const dashView = $('dashboard-view');
         const gateView = $('gate-view');
         const dashCount1 = $('dash-count-1');
         const dashCount2 = $('dash-count-2');
+        const dashLast1 = $('dash-last-1');
+        const dashLast2 = $('dash-last-2');
+        const dashTotal = $('dash-total');
+        const dashSync = $('dash-sync');
         const gateTitleNum = $('gateTitleNum');
-        const gateCountDisplay = $('gateCountDisplay');
+        const gateCountNum = $('gateCountNum');
+        const lastQRId = $('lastQRId');
+        const lastQRTime = $('lastQRTime');
         const scannerPlaceholder = $('scannerPlaceholder');
         const scanToggleBtn = $('scanToggleBtn');
         const flashOverlay = $('flashOverlay');
         const toast = $('toast');
 
-        /* ───────────────────────────────────────────────────────
+        /* ──────────────────────────────────────────────────────────
            UI UPDATE
-           ─────────────────────────────────────────────────────── */
+           ────────────────────────────────────────────────────────── */
         function updateAllUI() {
-            dashCount1.textContent = `${gate1Count} entries`;
-            dashCount2.textContent = `${gate2Count} entries`;
-            if (currentGate === 1) {
-                gateCountDisplay.textContent = gate1Count;
-                gateTitleNum.textContent = '1';
-                gateTitleNum.className = 'highlight-g1';
-                scanToggleBtn.className = 'scan-toggle-btn';
-            } else {
-                gateCountDisplay.textContent = gate2Count;
-                gateTitleNum.textContent = '2';
-                gateTitleNum.className = 'highlight-g2';
-                scanToggleBtn.className = 'scan-toggle-btn';
-            }
+            // Dashboard
+            dashCount1.textContent = gate1Count;
+            dashCount2.textContent = gate2Count;
+            dashTotal.textContent = gate1Count + gate2Count;
+
+            const fmtTime = (ts) => ts ? new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',
+                second: '2-digit' }) : '—';
+            dashLast1.textContent = `Last scan: ${lastScans[1].qr ? fmtTime(lastScans[1].time) : '—'}`;
+            dashLast2.textContent = `Last scan: ${lastScans[2].qr ? fmtTime(lastScans[2].time) : '—'}`;
+
+            // Gate view
+            const count = currentGate === 1 ? gate1Count : gate2Count;
+            gateCountNum.textContent = count;
+            gateCountNum.className = 'num ' + (currentGate === 1 ? 'g1' : 'g2');
+
+            const last = lastScans[currentGate];
+            lastQRId.textContent = last.qr || '—';
+            lastQRTime.textContent = last.time ? new Date(last.time).toLocaleTimeString([], { hour: '2-digit',
+                minute: '2-digit', second: '2-digit' }) : 'No scans yet';
+
+            // Gate title
+            gateTitleNum.textContent = currentGate;
+            gateTitleNum.className = currentGate === 1 ? 'g1' : 'g2';
+
+            // Persist
             localStorage.setItem('event_gate1', String(gate1Count));
             localStorage.setItem('event_gate2', String(gate2Count));
+            localStorage.setItem('event_lastQR_1', lastScans[1].qr || '');
+            localStorage.setItem('event_lastTime_1', lastScans[1].time || '');
+            localStorage.setItem('event_lastQR_2', lastScans[2].qr || '');
+            localStorage.setItem('event_lastTime_2', lastScans[2].time || '');
+
+            dashSync.textContent = `Last sync: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         }
 
         function bounceCount() {
-            gateCountDisplay.classList.remove('bounce');
-            void gateCountDisplay.offsetWidth;
-            gateCountDisplay.classList.add('bounce');
+            gateCountNum.classList.remove('bounce');
+            void gateCountNum.offsetWidth;
+            gateCountNum.classList.add('bounce');
         }
 
-        /* ───────────────────────────────────────────────────────
-           VIEWS / NAVIGATION
-           ─────────────────────────────────────────────────────── */
-        function showDashboard() {
-            // Stop scanner if running
-            if (isScanning) stopScannerSync();
-            dashView.classList.add('active');
-            gateView.classList.remove('active');
-            updateAllUI();
-        }
-
-        function showGate(gate) {
+        /* ──────────────────────────────────────────────────────────
+           NAVIGATION
+           ────────────────────────────────────────────────────────── */
+        function openGateView(gate) {
+            if (isScannerRunning) stopScannerSync();
             currentGate = gate;
+            // Reset scanner UI
+            scannerPlaceholder.classList.remove('hidden');
+            scanToggleBtn.innerHTML = '<span class="icon">📷</span> Open Camera';
+            scanToggleBtn.className = 'scan-toggle-btn open';
+
             dashView.classList.remove('active');
             gateView.classList.add('active');
-            // Reset scanner UI
-            if (isScanning) stopScannerSync();
-            scannerPlaceholder.classList.remove('hidden');
-            scanToggleBtn.innerHTML = '<span>📷</span> Open Camera';
-            scanToggleBtn.className = 'scan-toggle-btn';
             updateAllUI();
         }
 
-        /* ───────────────────────────────────────────────────────
+        function closeGateView() {
+            if (isScannerRunning) stopScannerSync();
+            gateView.classList.remove('active');
+            dashView.classList.add('active');
+            updateAllUI();
+        }
+
+        /* ──────────────────────────────────────────────────────────
            SCANNER ENGINE
-           ─────────────────────────────────────────────────────── */
+           ────────────────────────────────────────────────────────── */
         async function toggleScanner() {
-            if (isScanning) {
+            if (isScannerRunning) {
                 stopScannerSync();
                 return;
             }
@@ -782,61 +932,88 @@
         }
 
         async function startScanner() {
-            if (isScanning) return;
+            if (isScannerRunning) return;
             try {
                 if (!html5QrCode) {
                     html5QrCode = new Html5Qrcode('scanner-container');
                 }
                 const config = {
                     fps: 15,
-                    qrbox: { width: 220, height: 220 },
+                    qrbox: { width: 240, height: 240 },
                     aspectRatio: 1.0
                 };
                 await html5QrCode.start({ facingMode: 'environment' }, config, onScanSuccess, onScanError);
-                isScanning = true;
+                isScannerRunning = true;
                 scannerPlaceholder.classList.add('hidden');
-                scanToggleBtn.innerHTML = '<span>⏹</span> Close Camera';
-                // Style based on gate
-                if (currentGate === 1) {
-                    scanToggleBtn.className = 'scan-toggle-btn active active-g1';
-                } else {
-                    scanToggleBtn.className = 'scan-toggle-btn active active-g2';
-                }
+
+                const gateClass = currentGate === 1 ? 'active-g1' : 'active-g2';
+                scanToggleBtn.innerHTML = '<span class="icon">⏹</span> Close Camera';
+                scanToggleBtn.className = `scan-toggle-btn ${gateClass}`;
+
                 showToast('Camera ready', null, 600);
             } catch (err) {
-                console.warn('Camera start error:', err);
+                console.warn('Camera error:', err);
                 alert('Unable to access camera. Please check permissions.');
             }
         }
 
         function stopScannerSync() {
-            if (html5QrCode && isScanning) {
+            if (html5QrCode && isScannerRunning) {
                 try {
                     html5QrCode.stop();
                     html5QrCode.clear();
                 } catch (_) {}
-                isScanning = false;
+                isScannerRunning = false;
                 scannerPlaceholder.classList.remove('hidden');
-                scanToggleBtn.innerHTML = '<span>📷</span> Open Camera';
-                scanToggleBtn.className = 'scan-toggle-btn';
+                scanToggleBtn.innerHTML = '<span class="icon">📷</span> Open Camera';
+                scanToggleBtn.className = 'scan-toggle-btn open';
             }
         }
 
+        /* ──────────────────────────────────────────────────────────
+           SCAN HANDLER
+           ────────────────────────────────────────────────────────── */
         function onScanSuccess(decodedText, decodedResult) {
             if (scanCooldown) return;
             scanCooldown = true;
 
-            // Increment count for current gate
+            const qr = decodedText.trim();
+
+            // --- Duplicate check (permanent via localStorage) ---
+            const dupKey = `scanned_${currentGate}_${qr}`;
+            if (localStorage.getItem(dupKey) === 'true') {
+                flashScreen('red');
+                showToast('Already scanned', 'err', 1200);
+                scanCooldown = false;
+                setTimeout(() => { scanCooldown = false; }, 300);
+                return;
+            }
+
+            // --- Valid scan ---
             if (currentGate === 1) gate1Count++;
             else gate2Count++;
+
+            // Store as scanned
+            localStorage.setItem(dupKey, 'true');
+
+            // Update last scan
+            lastScans[currentGate] = { qr: qr, time: new Date().toISOString() };
 
             updateAllUI();
             bounceCount();
 
-            // Feedback
             flashScreen(currentGate);
             if (navigator.vibrate) navigator.vibrate(30);
-            showToast('+1 entry', currentGate, 800);
+            showToast('✓ Entry recorded', currentGate, 900);
+
+            // --- Auto-close camera after scan (high-throughput style) ---            // We close after a short delay so operator can see the flash/feedback.
+            setTimeout(() => {
+                if (isScannerRunning) {
+                    stopScannerSync();
+                    // Show a quick "Camera closed" toast
+                    showToast('Camera closed — ready for next', null, 600);
+                }
+            }, 500);
 
             setTimeout(() => {
                 scanCooldown = false;
@@ -847,19 +1024,25 @@
             // ignore
         }
 
-        /* ───────────────────────────────────────────────────────
+        /* ──────────────────────────────────────────────────────────
            RESET FUNCTIONS
-           ─────────────────────────────────────────────────────── */
+           ────────────────────────────────────────────────────────── */
         function resetCurrentGate() {
-            if (currentGate === 1) {
-                if (gate1Count === 0) return;
-                if (!confirm('Reset Gate 1 counter?')) return;
-                gate1Count = 0;
-            } else {
-                if (gate2Count === 0) return;
-                if (!confirm('Reset Gate 2 counter?')) return;
-                gate2Count = 0;
-            }
+            const key = currentGate === 1 ? 'gate1' : 'gate2';
+            const count = currentGate === 1 ? gate1Count : gate2Count;
+            if (count === 0) return;
+            if (!confirm(`Reset Gate ${currentGate} counter?`)) return;
+
+            if (currentGate === 1) gate1Count = 0;
+            else gate2Count = 0;
+
+            // Clear stored scanned records for this gate
+            const prefix = `scanned_${currentGate}_`;
+            Object.keys(localStorage).forEach(k => {
+                if (k.startsWith(prefix)) localStorage.removeItem(k);
+            });
+
+            lastScans[currentGate] = { qr: null, time: null };
             updateAllUI();
             showToast(`Gate ${currentGate} reset`, currentGate, 1000);
             if (navigator.vibrate) navigator.vibrate(20);
@@ -867,35 +1050,44 @@
 
         function resetAll() {
             if (gate1Count === 0 && gate2Count === 0) return;
-            if (!confirm('Reset ALL counters?')) return;
+            if (!confirm('Reset ALL counters and clear scan history?')) return;
+
             gate1Count = 0;
             gate2Count = 0;
+            lastScans = { 1: { qr: null, time: null }, 2: { qr: null, time: null } };
+
+            // Clear all scanned records
+            Object.keys(localStorage).forEach(k => {
+                if (k.startsWith('scanned_')) localStorage.removeItem(k);
+            });
+
             updateAllUI();
             showToast('All counters reset', null, 1200);
             if (navigator.vibrate) navigator.vibrate(30);
         }
 
-        /* ───────────────────────────────────────────────────────
+        /* ──────────────────────────────────────────────────────────
            FEEDBACK HELPERS
-           ─────────────────────────────────────────────────────── */
-        function flashScreen(gate) {
+           ────────────────────────────────────────────────────────── */
+        function flashScreen(type) {
             const el = flashOverlay;
             el.className = 'flash-overlay';
             void el.offsetWidth;
-            if (gate === 1) el.classList.add('green');
-            else if (gate === 2) el.classList.add('gold');
+            if (type === 1) el.classList.add('green');
+            else if (type === 2) el.classList.add('gold');
+            else if (type === 'red') el.classList.add('red');
             el.classList.add('show');
             clearTimeout(el._timer);
-            el._timer = setTimeout(() => el.classList.remove('show'), 150);
+            el._timer = setTimeout(() => el.classList.remove('show'), 180);
         }
 
-        function showToast(message, gate, duration = 1200) {
+        function showToast(message, badgeType, duration = 1200) {
             toast.innerHTML = '';
-            if (gate) {
-                const badge = document.createElement('span');
-                badge.className = `gate-badge g${gate}`;
-                badge.textContent = `Gate ${gate}`;
-                toast.appendChild(badge);
+            if (badgeType) {
+                const b = document.createElement('span');
+                b.className = 'badge ' + (badgeType === 'err' ? 'err' : `g${badgeType}`);
+                b.textContent = badgeType === 'err' ? '⚠ Duplicate' : `Gate ${badgeType}`;
+                toast.appendChild(b);
             }
             const text = document.createTextNode(message);
             toast.appendChild(text);
@@ -904,29 +1096,35 @@
             toast._hideTimer = setTimeout(() => toast.classList.remove('show'), duration);
         }
 
-        /* ───────────────────────────────────────────────────────
+        /* ──────────────────────────────────────────────────────────
            KEYBOARD SHORTCUTS
-           ─────────────────────────────────────────────────────── */
+           ────────────────────────────────────────────────────────── */
         document.addEventListener('keydown', (e) => {
-            if (e.key === '1') showGate(1);
-            else if (e.key === '2') showGate(2);
-            else if (e.key === 'Escape') showDashboard();
-            else if (e.key === ' ' || e.key === 'Space') {
-                e.preventDefault();
-                if (gateView.classList.contains('active')) toggleScanner();
+            if (e.key === '1') { if (dashView.classList.contains('active')) openGateView(1); } else if (e.key === '2') { if (
+                    dashView.classList.contains('active')) openGateView(2); } else if (e.key === 'Escape') { if (gateView
+                    .classList.contains('active')) closeGateView(); } else if (e.key === ' ' || e.key === 'Space') { if (
+                    gateView.classList.contains('active')) { e.preventDefault();
+                    toggleScanner(); } }
+        });
+
+        /* ──────────────────────────────────────────────────────────
+           INIT
+           ────────────────────────────────────────────────────────── */
+        updateAllUI();
+        console.log(`🚪 Event Scanner ready. Gate1: ${gate1Count}, Gate2: ${gate2Count}`);
+
+        // Cleanup
+        window.addEventListener('beforeunload', () => {
+            if (html5QrCode && isScannerRunning) {
+                try { html5QrCode.stop(); } catch (_) {}
             }
         });
 
-        /* ───────────────────────────────────────────────────────
-           INIT
-           ─────────────────────────────────────────────────────── */
-        updateAllUI();
-        console.log(`🚀 Event Scanner ready. Gate 1: ${gate1Count}, Gate 2: ${gate2Count}`);
-
-        // Clean up scanner on page unload
-        window.addEventListener('beforeunload', () => {
-            if (html5QrCode && isScanning) {
-                try { html5QrCode.stop(); } catch (_) {}
+        // Visibility change – restart scanner if it was running
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && isScannerRunning) {
+                // If scanner was running but got paused by browser, restart
+                // We'll just re-init if needed – but our stop/start flow handles it.
             }
         });
     </script>
