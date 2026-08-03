@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Event Scanner - Gate Counter</title>
+
+    <!-- PWA Meta -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0a0e1a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- QR Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js">
+    </script>
+
+    <style>
+        /* ───────────── RESET & BASE ───────────── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-card: #131a2e;
+            --bg-card-hover: #1a2440;
+            --accent-1: #6c5ce7;
+            --accent-2: #00cec9;
+            --accent-gate1: #00b894;
+            --accent-gate2: #fdcb6e;
+            --text-primary: #f0f4ff;
+            --text-secondary: #a0b4d0;
+            --text-muted: #6a7f9f;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+            font-family: var(--font);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        /* ───────────── APP SHELL ───────────── */
+        #app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: 100dvh;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 16px 20px;
+            background: radial-gradient(ellipse at 50% 0%, #141d3a 0%, #0a0e1a 70%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* subtle glow orbs */
+        #app::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -20%;
+            width: 60%;
+            height: 40%;
+            background: radial-gradient(circle, rgba(108, 92, 231, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        #app::after {
+            content: '';
+            position: absolute;
+            bottom: -10%;
+            left: -20%;
+            width: 60%;
+            height: 40%;
+            background: radial-gradient(circle, rgba(0, 206, 201, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ───────────── HEADER / LOGO ───────────── */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px 0 12px;
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .logo-wrapper {
+            flex-shrink: 0;
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.3);
+            overflow: hidden;
+        }
+
+        .logo-wrapper img,
+        .logo-wrapper svg {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .logo-placeholder {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .header-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .header-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff 60%, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-text .sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            -webkit-text-fill-color: var(--text-secondary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .header-btn {
+            background: var(--bg-card);
+            border: none;
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .header-btn:active {
+            transform: scale(0.92);
+            background: var(--bg-card-hover);
+        }
+
+        /* ───────────── SCANNER ───────────── */
+        .scanner-container {
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: #000;
+            aspect-ratio: 4 / 3;
+            min-height: 180px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 4px 0 14px;
+        }
+
+        #scanner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #scanner video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            display: block !important;
+        }
+
+        /* viewfinder overlay */
+        .scanner-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .scanner-overlay .corner {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            border-color: rgba(255, 255, 255, 0.7);
+            border-style: solid;
+            border-width: 0;
+        }
+        .scanner-overlay .corner.tl {
+            top: 20px;
+            left: 20px;
+            border-top-width: 3px;
+            border-left-width: 3px;
+        }
+        .scanner-overlay .corner.tr {
+            top: 20px;
+            right: 20px;
+            border-top-width: 3px;
+            border-right-width: 3px;
+        }
+        .scanner-overlay .corner.bl {
+            bottom: 20px;
+            left: 20px;
+            border-bottom-width: 3px;
+            border-left-width: 3px;
+        }
+        .scanner-overlay .corner.br {
+            bottom: 20px;
+            right: 20px;
+            border-bottom-width: 3px;
+            border-right-width: 3px;
+        }
+
+        .scanner-overlay .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(0, 206, 201, 0.5);
+            box-shadow: 0 0 20px rgba(0, 206, 201, 0.3);
+            animation: pulse-dot 1.8s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0.9;
+                transform: translate(-50%, -50%) scale(1.6);
+            }
+        }
+
+        .scanner-status {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            pointer-events: none;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .scanner-status.active {
+            color: var(--accent-2);
+            border-color: rgba(0, 206, 201, 0.2);
+        }
+
+        /* ───────────── GATES ROW ───────────── */
+        .gates-row {
+            display: flex;
+            gap: 12px;
+            z-index: 1;
+            flex-shrink: 0;
+            margin-bottom: 12px;
+        }
+
+        .gate-btn {
+            flex: 1;
+            background: var(--bg-card);
+            border: 2px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius);
+            padding: 14px 10px 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gate-btn:active {
+            transform: scale(0.96);
+        }
+
+        .gate-btn .gate-label {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .gate-btn .gate-count {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-top: 2px;
+            transition: var(--transition);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .gate-btn .gate-sub {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            letter-spacing: 0.3px;
+        }
+
+        /* Gate 1 specific */
+        .gate-btn.gate-1 {
+            border-color: rgba(0, 184, 148, 0.15);
+        }
+        .gate-btn.gate-1 .gate-count {
+            color: var(--accent-gate1);
+        }
+        .gate-btn.gate-1.active {
+            border-color: var(--accent-gate1);
+            background: rgba(0, 184, 148, 0.08);
+            box-shadow: 0 0 30px rgba(0, 184, 148, 0.05);
+        }
+        .gate-btn.gate-1.active .gate-label {
+            color: var(--accent-gate1);
+        }
+
+        /* Gate 2 specific */
+        .gate-btn.gate-2 {
+            border-color: rgba(253, 203, 110, 0.15);
+        }
+        .gate-btn.gate-2 .gate-count {
+            color: var(--accent-gate2);
+        }
+        .gate-btn.gate-2.active {
+            border-color: var(--accent-gate2);
+            background: rgba(253, 203, 110, 0.08);
+            box-shadow: 0 0 30px rgba(253, 203, 110, 0.05);
+        }
+        .gate-btn.gate-2.active .gate-label {
+            color: var(--accent-gate2);
+        }
+
+        /* gate reset button (small) */
+        .gate-reset {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            color: var(--text-muted);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.4;
+        }
+        .gate-reset:active {
+            transform: scale(0.85);
+            background: rgba(255, 70, 70, 0.15);
+            color: #ff6b6b;
+            opacity: 1;
+        }
+        .gate-btn:hover .gate-reset {
+            opacity: 0.8;
+        }
+
+        /* ───────────── STATS BAR ───────────── */
+        .stats-bar {
+            display: flex;
+            gap: 12px;
+            z-index: 1;
+            flex-shrink: 0;
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(4px);
+            margin-top: auto;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stats-item {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .stats-item .num {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stats-item .num.total {
+            color: var(--accent-2);
+        }
+
+        .stats-divider {
+            width: 1px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .last-scan {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: right;
+            line-height: 1.3;
+            flex-shrink: 0;
+        }
+        .last-scan .time {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* ───────────── FLASH / NOTIFICATION ───────────── */
+        .flash-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.15);
+            opacity: 0;
+            transition: opacity 0.08s ease;
+        }
+        .flash-overlay.show {
+            opacity: 1;
+        }
+        .flash-overlay.green {
+            background: rgba(0, 184, 148, 0.25);
+        }
+        .flash-overlay.gold {
+            background: rgba(253, 203, 110, 0.25);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 12px 28px;
+            border-radius: 30px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .toast .gate-badge {
+            display: inline-block;
+            padding: 0 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-right: 6px;
+        }
+        .toast .gate-badge.g1 {
+            background: rgba(0, 184, 148, 0.25);
+            color: var(--accent-gate1);
+        }
+        .toast .gate-badge.g2 {
+            background: rgba(253, 203, 110, 0.25);
+            color: var(--accent-gate2);
+        }
+
+        /* ───────────── SCROLLBAR ───────────── */
+        ::-webkit-scrollbar {
+            width: 0;
+        }
+
+        /* ───────────── RESPONSIVE ───────────── */
+        @media (max-width: 420px) {
+            #app {
+                padding: 0 10px 14px;
+            }
+            .header-text h1 {
+                font-size: 17px;
+            }
+            .logo-wrapper {
+                width: 44px;
+                height: 44px;
+            }
+            .gate-btn .gate-count {
+                font-size: 32px;
+            }
+            .gate-btn {
+                min-height: 68px;
+                padding: 10px 6px;
+            }
+            .scanner-container {
+                aspect-ratio: 4 / 3.2;
+                min-height: 140px;
+            }
+            .stats-item .num {
+                font-size: 16px;
+            }
+            .last-scan {
+                font-size: 10px;
+            }
+            .toast {
+                font-size: 13px;
+                padding: 10px 20px;
+                bottom: 80px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .gates-row {
+                gap: 8px;
+            }
+            .gate-btn .gate-count {
+                font-size: 26px;
+            }
+            .gate-btn .gate-label {
+                font-size: 11px;
+            }
+            .header-text h1 {
+                font-size: 15px;
+            }
+            .stats-bar {
+                flex-wrap: wrap;
+                gap: 6px;
+                padding: 8px 10px;
+            }
+            .stats-divider {
+                display: none;
+            }
+        }
+
+        @media (min-height: 800px) {
+            .scanner-container {
+                aspect-ratio: 4 / 2.8;
+                min-height: 240px;
+            }
+        }
+
+        /* ───────────── LOADING ───────────── */
+        .scanner-loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0e1a;
+            z-index: 1;
+            color: var(--text-muted);
+            font-size: 14px;
+            gap: 12px;
+            flex-direction: column;
+        }
+        .scanner-loading .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(255, 255, 255, 0.06);
+            border-top-color: var(--accent-2);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .scanner-loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s;
+        }
+
+        /* ───────────── RESET ALL ───────────── */
+        .reset-all-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 70, 70, 0.15);
+            color: var(--text-muted);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .reset-all-btn:active {
+            transform: scale(0.92);
+            background: rgba(255, 70, 70, 0.08);
+            border-color: rgba(255, 70, 70, 0.3);
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── FLASH OVERLAY ─── -->
+    <div class="flash-overlay" id="flashOverlay"></div>
+
+    <!-- ─── TOAST ─── -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ─── APP ─── -->
+    <div id="app">
+
+        <!-- HEADER -->
+        <header class="header">
+            <div class="logo-wrapper" id="logoContainer">
+                <!-- Replace this SVG with your own logo -->
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100" height="100" rx="20" fill="url(#logoGrad)" />
+                    <path d="M30 70 L30 40 L50 25 L70 40 L70 70 L50 85 L30 70Z" stroke="white" stroke-width="4" fill="none" stroke-linejoin="round" />
+                    <path d="M40 55 L50 65 L65 50" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                    <defs>
+                        <linearGradient id="logoGrad" x1="0" y1="0" x2="100" y2="100">
+                            <stop offset="0%" stop-color="#6c5ce7" />
+                            <stop offset="100%" stop-color="#00cec9" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="header-text">
+                <h1>Event Scanner</h1>
+                <div class="sub">QR · People Counter</div>
+            </div>
+            <div class="header-actions">
+                <button class="reset-all-btn" id="resetAllBtn" title="Reset all counters">⟳ Reset</button>
+                <button class="header-btn" id="toggleCameraBtn" title="Toggle Camera">📷</button>
+            </div>
+        </header>
+
+        <!-- SCANNER -->
+        <div class="scanner-container">
+            <div id="scanner"></div>
+            <div class="scanner-overlay">
+                <div class="corner tl"></div>
+                <div class="corner tr"></div>
+                <div class="corner bl"></div>
+                <div class="corner br"></div>
+                <div class="center-dot"></div>
+            </div>
+            <div class="scanner-status" id="scannerStatus">● Camera starting…</div>
+            <div class="scanner-loading" id="scannerLoading">
+                <div class="spinner"></div>
+                <span>Initializing camera…</span>
+            </div>
+        </div>
+
+        <!-- GATES -->
+        <div class="gates-row">
+            <button class="gate-btn gate-1 active" id="gate1Btn" data-gate="1">
+                <button class="gate-reset" data-gate="1" title="Reset Gate 1">✕</button>
+                <span class="gate-label">Gate 1</span>
+                <span class="gate-count" id="count1">0</span>
+                <span class="gate-sub">entries</span>
+            </button>
+            <button class="gate-btn gate-2" id="gate2Btn" data-gate="2">
+                <button class="gate-reset" data-gate="2" title="Reset Gate 2">✕</button>
+                <span class="gate-label">Gate 2</span>
+                <span class="gate-count" id="count2">0</span>
+                <span class="gate-sub">entries</span>
+            </button>
+        </div>
+
+        <!-- STATS BAR -->
+        <div class="stats-bar">
+            <div class="stats-item">
+                <span>Total</span>
+                <span class="num total" id="totalCount">0</span>
+            </div>
+            <div class="stats-divider"></div>
+            <div class="stats-item">
+                <span>Last scan</span>
+                <span class="num" id="lastScanTime" style="font-size:13px; font-weight:500; color:var(--text-secondary);">—</span>
+            </div>
+            <div class="last-scan">
+                <span class="time" id="activeGateDisplay">Gate 1</span>
+                <span style="color:var(--text-muted);font-size:10px;display:block;">active</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /* ───────────────────────────────────────────────────────
+               APP STATE
+               ─────────────────────────────────────────────────────── */
+        const state = {
+            gate1: parseInt(localStorage.getItem('scan_count_1') || '0'),
+            gate2: parseInt(localStorage.getItem('scan_count_2') || '0'),
+            activeGate: 1, // 1 or 2
+            lastScan: localStorage.getItem('scan_last_time') || null,
+            isScanning: false,
+            scanner: null,
+            cameraStarted: false,
+        };
+
+        /* ───────────────────────────────────────────────────────
+               DOM REFS
+               ─────────────────────────────────────────────────────── */
+        const $ = (id) => document.getElementById(id);
+        const count1El = $('count1');
+        const count2El = $('count2');
+        const totalEl = $('totalCount');
+        const lastScanEl = $('lastScanTime');
+        const activeGateDisplay = $('activeGateDisplay');
+        const gate1Btn = $('gate1Btn');
+        const gate2Btn = $('gate2Btn');
+        const scannerStatus = $('scannerStatus');
+        const scannerLoading = $('scannerLoading');
+        const flashOverlay = $('flashOverlay');
+        const toast = $('toast');
+        const toggleCameraBtn = $('toggleCameraBtn');
+        const resetAllBtn = $('resetAllBtn');
+
+        /* ───────────────────────────────────────────────────────
+               UI HELPERS
+               ─────────────────────────────────────────────────────── */
+        function updateUI() {
+            count1El.textContent = state.gate1;
+            count2El.textContent = state.gate2;
+            totalEl.textContent = state.gate1 + state.gate2;
+
+            // active gate highlight
+            gate1Btn.classList.toggle('active', state.activeGate === 1);
+            gate2Btn.classList.toggle('active', state.activeGate === 2);
+            activeGateDisplay.textContent = `Gate ${state.activeGate}`;
+
+            // last scan
+            if (state.lastScan) {
+                const d = new Date(state.lastScan);
+                lastScanEl.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            } else {
+                lastScanEl.textContent = '—';
+            }
+
+            // persist
+            localStorage.setItem('scan_count_1', String(state.gate1));
+            localStorage.setItem('scan_count_2', String(state.gate2));
+            if (state.lastScan) {
+                localStorage.setItem('scan_last_time', state.lastScan);
+            }
+        }
+
+        function showToast(message, gate, duration = 1400) {
+            toast.innerHTML = '';
+            if (gate) {
+                const badge = document.createElement('span');
+                badge.className = `gate-badge g${gate}`;
+                badge.textContent = `Gate ${gate}`;
+                toast.appendChild(badge);
+            }
+            const text = document.createTextNode(message);
+            toast.appendChild(text);
+            toast.classList.add('show');
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => toast.classList.remove('show'), duration);
+        }
+
+        function flashScreen(gate) {
+            const el = flashOverlay;
+            el.className = 'flash-overlay';
+            // force reflow
+            void el.offsetWidth;
+            if (gate === 1) el.classList.add('green');
+            else if (gate === 2) el.classList.add('gold');
+            el.classList.add('show');
+            clearTimeout(el._timer);
+            el._timer = setTimeout(() => el.classList.remove('show'), 150);
+        }
+
+        function vibrate() {
+            if (navigator.vibrate) navigator.vibrate(30);
+        }
+
+        function playBeep() {
+            try {
+                const ctx = new(window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = 880;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.12);
+            } catch (_) { /* silent fail */ }
+        }
+
+        /* ───────────────────────────────────────────────────────
+               SCAN HANDLER
+               ─────────────────────────────────────────────────────── */
+        function handleScan(decodedText, decodedResult) {
+            if (state.isScanning) return;
+            state.isScanning = true;
+
+            const gate = state.activeGate;
+            if (gate === 1) {
+                state.gate1 += 1;
+            } else {
+                state.gate2 += 1;
+            }
+            state.lastScan = new Date().toISOString();
+
+            updateUI();
+            flashScreen(gate);
+            vibrate();
+            playBeep();
+            showToast(`Scanned! +1`, gate, 1200);
+
+            // reset lock after short cooldown to prevent double-scan
+            setTimeout(() => {
+                state.isScanning = false;
+            }, 400);
+        }
+
+        function onScanError(err) {
+            // ignore – library logs internally
+        }
+
+        /* ───────────────────────────────────────────────────────
+               SCANNER INIT
+               ─────────────────────────────────────────────────────── */
+        let scannerInstance = null;
+        let isScannerRunning = false;
+
+        async function startScanner() {
+            if (scannerInstance && isScannerRunning) return;
+
+            try {
+                scannerLoading.classList.remove('hidden');
+                scannerStatus.textContent = '● Starting camera…';
+                scannerStatus.classList.remove('active');
+
+                if (!scannerInstance) {
+                    scannerInstance = new Html5Qrcode('scanner');
+                }
+
+                const config = {
+                    fps: 30,
+                    qrbox: { width: 220, height: 220 },
+                    aspectRatio: 1.0,
+                };
+
+                await scannerInstance.start({ facingMode: 'environment' }, config, handleScan, onScanError);
+
+                isScannerRunning = true;
+                state.cameraStarted = true;
+                scannerLoading.classList.add('hidden');
+                scannerStatus.textContent = '● Ready — scan QR';
+                scannerStatus.classList.add('active');
+                showToast('Camera ready', null, 800);
+
+            } catch (err) {
+                console.warn('Scanner start error:', err);
+                scannerLoading.classList.add('hidden');
+                scannerStatus.textContent = '⚠️ Camera unavailable';
+                scannerStatus.classList.remove('active');
+                showToast('Camera error — check permissions', null, 2500);
+
+                // fallback: try again after 3s
+                setTimeout(() => {
+                    if (!isScannerRunning) startScanner();
+                }, 3000);
+            }
+        }
+
+        async function stopScanner() {
+            if (scannerInstance && isScannerRunning) {
+                try {
+                    await scannerInstance.stop();
+                    isScannerRunning = false;
+                    state.cameraStarted = false;
+                    scannerStatus.textContent = '● Camera paused';
+                    scannerStatus.classList.remove('active');
+                } catch (_) { /* ignore */ }
+            }
+        }
+
+        async function toggleCamera() {
+            if (isScannerRunning) {
+                await stopScanner();
+                toggleCameraBtn.textContent = '📷';
+                showToast('Camera paused', null, 800);
+            } else {
+                await startScanner();
+                toggleCameraBtn.textContent = '⏹';
+            }
+        }
+
+        /* ───────────────────────────────────────────────────────
+               GATE SELECTION
+               ─────────────────────────────────────────────────────── */
+        function setActiveGate(gate) {
+            if (state.activeGate === gate) return;
+            state.activeGate = gate;
+            updateUI();
+            // haptic feedback
+            if (navigator.vibrate) navigator.vibrate(8);
+        }
+
+        /* ───────────────────────────────────────────────────────
+               RESET
+               ─────────────────────────────────────────────────────── */
+        function resetGate(gate) {
+            if (gate === 1) {
+                if (state.gate1 === 0) return;
+                state.gate1 = 0;
+            } else {
+                if (state.gate2 === 0) return;
+                state.gate2 = 0;
+            }
+            updateUI();
+            showToast(`Gate ${gate} reset`, gate, 1000);
+            if (navigator.vibrate) navigator.vibrate(15);
+        }
+
+        function resetAll() {
+            if (state.gate1 === 0 && state.gate2 === 0) return;
+            if (confirm('Reset both gate counters?')) {
+                state.gate1 = 0;
+                state.gate2 = 0;
+                state.lastScan = null;
+                updateUI();
+                showToast('All counters reset', null, 1200);
+                if (navigator.vibrate) navigator.vibrate(20);
+            }
+        }
+
+        /* ───────────────────────────────────────────────────────
+               EVENT LISTENERS
+               ─────────────────────────────────────────────────────── */
+        gate1Btn.addEventListener('click', (e) => {
+            // ignore if clicking the reset button inside
+            if (e.target.closest('.gate-reset')) return;
+            setActiveGate(1);
+        });
+
+        gate2Btn.addEventListener('click', (e) => {
+            if (e.target.closest('.gate-reset')) return;
+            setActiveGate(2);
+        });
+
+        // reset buttons inside gates
+        document.querySelectorAll('.gate-reset').forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const gate = parseInt(btn.dataset.gate);
+                resetGate(gate);
+            });
+        });
+
+        resetAllBtn.addEventListener('click', resetAll);
+
+        toggleCameraBtn.addEventListener('click', toggleCamera);
+
+        // keyboard shortcuts: 1, 2 for gates, Space for toggle camera
+        document.addEventListener('keydown', (e) => {
+            if (e.key === '1') setActiveGate(1);
+            else if (e.key === '2') setActiveGate(2);
+            else if (e.key === ' ' || e.key === 'Space') {
+                e.preventDefault();
+                toggleCamera();
+            } else if (e.key === 'r' || e.key === 'R') {
+                if (e.ctrlKey || e.metaKey) return;
+                resetAll();
+            }
+        });
+
+        // handle visibility change – restart camera if needed
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && !isScannerRunning && state.cameraStarted) {
+                startScanner();
+            }
+        });
+
+        /* ───────────────────────────────────────────────────────
+               INIT
+               ─────────────────────────────────────────────────────── */
+        updateUI();
+
+        // start scanner after a small delay for UI to settle
+        setTimeout(startScanner, 500);
+
+        // handle page unload – stop camera
+        window.addEventListener('beforeunload', () => {
+            stopScanner();
+        });
+
+        console.log('📱 Event Scanner PWA ready');
+        console.log(`Gate 1: ${state.gate1} | Gate 2: ${state.gate2} | Total: ${state.gate1 + state.gate2}`);
+    </script>
+
+</body>
+</html>
