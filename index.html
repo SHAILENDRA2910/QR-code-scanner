@@ -37,7 +37,7 @@
             --gate1-glow: rgba(184, 138, 75, 0.20);
             --gate1-bg: rgba(184, 138, 75, 0.08);
 
-            --gate2-primary: #8F7A5C;      ·-- warm earth
+            --gate2-primary: #8F7A5C;      /* warm earth */
             --gate2-glow: rgba(143, 122, 92, 0.20);
             --gate2-bg: rgba(143, 122, 92, 0.08);
 
@@ -135,6 +135,7 @@
             align-items: center;
             justify-content: center;
             padding: 6px;
+            overflow: hidden;
         }
         .logo-wrapper img {
             width: 100%;
@@ -657,7 +658,8 @@
         <div id="dashboard-view" class="view active">
             <header class="app-header">
                 <div class="logo-wrapper">
-                    <img src="logo.png" alt="Gold Squirrel Studio" style="width:100%; height:100%; object-fit:contain;" />
+                    <!-- ✅ Using your uploaded logo.png -->
+                    <img src="logo.png" alt="Gold Squirrel Studio" />
                 </div>
                 <div class="header-text">
                     <h1>Gold Squirrel <span class="brand-gold">Studio</span></h1>
@@ -910,7 +912,6 @@
             // ---- GLOBAL duplicate check (QR‑based, not gate‑based) ----
             if (scannedSet.has(qr)) {
                 flashScreen('red');
-                // show which gate first scanned? we can show from lastScans but we keep simple
                 showToast('Already scanned (global)', 'err', 1200);
                 scanCooldown = false;
                 setTimeout(() => { scanCooldown = false; }, 300);
