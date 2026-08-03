@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -25,19 +26,23 @@
 
         :root {
             /* Light, warm, company-friendly palette */
-            --bg-primary: #FBF8F4;        /* soft ivory */
+            --bg-primary: #FBF8F4;
+            /* soft ivory */
             --bg-card: #FFFFFF;
             --bg-card-hover: #F5F0EA;
             --border-light: #E5DDD3;
-            --text-primary: #2C241A;      /* warm dark */
+            --text-primary: #C69C5A;
+            /* warm dark */
             --text-secondary: #6B5F4E;
             --text-muted: #A69682;
 
-            --gate1-primary: #B88A4B;      /* gold / squirrel */
+            --gate1-primary: #B88A4B;
+            /* gold / squirrel */
             --gate1-glow: rgba(184, 138, 75, 0.20);
             --gate1-bg: rgba(184, 138, 75, 0.08);
 
-            --gate2-primary: #8F7A5C;      /* warm earth */
+            --gate2-primary: #8F7A5C;
+            /* warm earth */
             --gate2-glow: rgba(143, 122, 92, 0.20);
             --gate2-bg: rgba(143, 122, 92, 0.08);
 
@@ -97,6 +102,7 @@
             z-index: 1;
             animation: fadeIn 0.25s ease;
         }
+
         .view.active {
             display: flex;
         }
@@ -106,6 +112,7 @@
                 opacity: 0;
                 transform: translateY(12px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -137,6 +144,7 @@
             padding: 6px;
             overflow: hidden;
         }
+
         .logo-wrapper img {
             width: 100%;
             height: 100%;
@@ -150,12 +158,14 @@
             letter-spacing: -0.3px;
             color: var(--text-primary);
         }
+
         .header-text .sub {
             font-size: 12px;
             font-weight: 500;
             color: var(--text-secondary);
             letter-spacing: 0.2px;
         }
+
         .brand-gold {
             color: var(--accent-gold);
             font-weight: 700;
@@ -184,9 +194,11 @@
             position: relative;
             min-height: 90px;
         }
+
         .gate-card.gate-1 {
             border-left: 5px solid var(--gate1-primary);
         }
+
         .gate-card.gate-2 {
             border-left: 5px solid var(--gate2-primary);
         }
@@ -196,6 +208,7 @@
             flex-direction: column;
             gap: 2px;
         }
+
         .gate-card .gate-label {
             font-size: 13px;
             font-weight: 600;
@@ -203,6 +216,7 @@
             letter-spacing: 0.6px;
             color: var(--text-secondary);
         }
+
         .gate-card .gate-count {
             font-size: 44px;
             font-weight: 800;
@@ -210,12 +224,15 @@
             font-variant-numeric: tabular-nums;
             letter-spacing: -1px;
         }
+
         .gate-card.gate-1 .gate-count {
             color: var(--gate1-primary);
         }
+
         .gate-card.gate-2 .gate-count {
             color: var(--gate2-primary);
         }
+
         .gate-card .gate-sub {
             font-size: 11px;
             color: var(--text-muted);
@@ -239,15 +256,18 @@
             min-width: 110px;
             justify-content: center;
         }
+
         .gate-card .action-btn:active {
             transform: scale(0.94);
             background: var(--bg-card-hover);
         }
+
         .gate-card.gate-1 .action-btn:active {
             border-color: var(--gate1-primary);
             color: var(--gate1-primary);
             background: var(--gate1-bg);
         }
+
         .gate-card.gate-2 .action-btn:active {
             border-color: var(--gate2-primary);
             color: var(--gate2-primary);
@@ -266,22 +286,26 @@
             flex-wrap: wrap;
             gap: 8px;
         }
+
         .total-display {
             display: flex;
             align-items: baseline;
             gap: 8px;
         }
+
         .total-display .label {
             font-size: 13px;
             color: var(--text-secondary);
             font-weight: 500;
         }
+
         .total-display .number {
             font-size: 28px;
             font-weight: 800;
             color: var(--gate1-primary);
             font-variant-numeric: tabular-nums;
         }
+
         .dash-footer .status-badge {
             font-size: 11px;
             font-weight: 600;
@@ -291,11 +315,13 @@
             color: #2A6B3A;
             border: 1px solid #C6DCC2;
         }
+
         .dash-footer .status-badge.offline {
             background: #F5E8E6;
             color: #A34A3A;
             border-color: #E5CBC6;
         }
+
         .reset-all-btn {
             background: transparent;
             border: 1px solid var(--border-light);
@@ -308,6 +334,7 @@
             transition: var(--transition);
             letter-spacing: 0.3px;
         }
+
         .reset-all-btn:active {
             background: rgba(180, 80, 60, 0.06);
             border-color: rgba(180, 80, 60, 0.2);
@@ -324,6 +351,7 @@
             border-bottom: 1px solid var(--border-light);
             margin-bottom: 14px;
         }
+
         .back-btn {
             background: var(--bg-card);
             border: 1px solid var(--border-light);
@@ -339,22 +367,27 @@
             justify-content: center;
             box-shadow: var(--shadow-sm);
         }
+
         .back-btn:active {
             transform: scale(0.90);
             background: var(--bg-card-hover);
         }
+
         .gate-view-title {
             flex: 1;
             font-size: 20px;
             font-weight: 700;
             letter-spacing: -0.3px;
         }
+
         .gate-view-title .g1 {
             color: var(--gate1-primary);
         }
+
         .gate-view-title .g2 {
             color: var(--gate2-primary);
         }
+
         .gate-reset-btn {
             background: transparent;
             border: none;
@@ -366,6 +399,7 @@
             transition: var(--transition);
             border-radius: 20px;
         }
+
         .gate-reset-btn:active {
             background: rgba(180, 80, 60, 0.05);
             color: #B4503C;
@@ -386,40 +420,48 @@
             flex-wrap: wrap;
             box-shadow: var(--shadow-sm);
         }
+
         .count-stats .main-count {
             display: flex;
             align-items: baseline;
             gap: 8px;
         }
+
         .count-stats .main-count .num {
             font-size: 44px;
             font-weight: 800;
             font-variant-numeric: tabular-nums;
             transition: var(--transition);
         }
+
         .count-stats .main-count .num.g1 {
             color: var(--gate1-primary);
         }
+
         .count-stats .main-count .num.g2 {
             color: var(--gate2-primary);
         }
+
         .count-stats .main-count .label {
             font-size: 12px;
             color: var(--text-muted);
             font-weight: 500;
         }
+
         .count-stats .last-info {
             text-align: right;
             font-size: 12px;
             color: var(--text-secondary);
             line-height: 1.4;
         }
+
         .count-stats .last-info .qr-id {
             font-family: 'SF Mono', 'Courier New', monospace;
             font-size: 13px;
             font-weight: 600;
             color: var(--text-primary);
         }
+
         .count-stats .last-info .time {
             font-size: 11px;
             color: var(--text-muted);
@@ -437,13 +479,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.02);
         }
+
         #scanner-container {
             width: 100%;
             height: 100%;
             position: relative;
         }
+
         #scanner-container video {
             width: 100% !important;
             height: 100% !important;
@@ -468,14 +512,17 @@
             padding: 20px;
             text-align: center;
         }
+
         .scanner-placeholder.hidden {
             opacity: 0;
             pointer-events: none;
         }
+
         .scanner-placeholder .big-icon {
             font-size: 44px;
             opacity: 0.4;
         }
+
         .scanner-placeholder .sub {
             font-size: 12px;
             opacity: 0.6;
@@ -487,6 +534,7 @@
             pointer-events: none;
             z-index: 3;
         }
+
         .scanner-overlay .corner {
             position: absolute;
             width: 24px;
@@ -495,10 +543,34 @@
             border-style: solid;
             border-width: 0;
         }
-        .scanner-overlay .corner.tl { top: 16px; left: 16px; border-top-width: 3px; border-left-width: 3px; }
-        .scanner-overlay .corner.tr { top: 16px; right: 16px; border-top-width: 3px; border-right-width: 3px; }
-        .scanner-overlay .corner.bl { bottom: 16px; left: 16px; border-bottom-width: 3px; border-left-width: 3px; }
-        .scanner-overlay .corner.br { bottom: 16px; right: 16px; border-bottom-width: 3px; border-right-width: 3px; }
+
+        .scanner-overlay .corner.tl {
+            top: 16px;
+            left: 16px;
+            border-top-width: 3px;
+            border-left-width: 3px;
+        }
+
+        .scanner-overlay .corner.tr {
+            top: 16px;
+            right: 16px;
+            border-top-width: 3px;
+            border-right-width: 3px;
+        }
+
+        .scanner-overlay .corner.bl {
+            bottom: 16px;
+            left: 16px;
+            border-bottom-width: 3px;
+            border-left-width: 3px;
+        }
+
+        .scanner-overlay .corner.br {
+            bottom: 16px;
+            right: 16px;
+            border-bottom-width: 3px;
+            border-right-width: 3px;
+        }
 
         .scan-toggle-btn {
             width: 100%;
@@ -520,22 +592,27 @@
             margin-top: 12px;
             box-shadow: var(--shadow-sm);
         }
+
         .scan-toggle-btn:active {
             transform: scale(0.97);
         }
+
         .scan-toggle-btn.open:active {
             background: var(--bg-card-hover);
         }
+
         .scan-toggle-btn.active-g1 {
             background: var(--gate1-bg);
             border-color: var(--gate1-primary);
             color: var(--gate1-primary);
         }
+
         .scan-toggle-btn.active-g2 {
             background: var(--gate2-bg);
             border-color: var(--gate2-primary);
             color: var(--gate2-primary);
         }
+
         .scan-toggle-btn .icon {
             font-size: 20px;
         }
@@ -550,15 +627,19 @@
             opacity: 0;
             transition: opacity 0.08s ease;
         }
+
         .flash-overlay.show {
             opacity: 1;
         }
+
         .flash-overlay.green {
             background: rgba(184, 138, 75, 0.15);
         }
+
         .flash-overlay.gold {
             background: rgba(143, 122, 92, 0.15);
         }
+
         .flash-overlay.red {
             background: rgba(190, 70, 50, 0.15);
         }
@@ -586,10 +667,12 @@
             align-items: center;
             gap: 12px;
         }
+
         .toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
         .toast .badge {
             display: inline-block;
             padding: 2px 14px;
@@ -599,52 +682,113 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
+
         .toast .badge.g1 {
             background: var(--gate1-bg);
             color: var(--gate1-primary);
-            border: 1px solid rgba(184,138,75,0.2);
+            border: 1px solid rgba(184, 138, 75, 0.2);
         }
+
         .toast .badge.g2 {
             background: var(--gate2-bg);
             color: var(--gate2-primary);
-            border: 1px solid rgba(143,122,92,0.2);
+            border: 1px solid rgba(143, 122, 92, 0.2);
         }
+
         .toast .badge.err {
             background: rgba(190, 70, 50, 0.08);
             color: #B4503C;
-            border: 1px solid rgba(190,70,50,0.15);
+            border: 1px solid rgba(190, 70, 50, 0.15);
         }
 
         /* ───────────── BOUNCE ───────────── */
         @keyframes countBounce {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
+
         .bounce {
             animation: countBounce 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         @media (max-width: 420px) {
-            #app { padding: 12px 10px 16px; }
-            .gate-card { padding: 14px 16px; min-height: 72px; }
-            .gate-card .gate-count { font-size: 32px; }
-            .gate-card .action-btn { font-size: 12px; padding: 8px 12px; min-width: 80px; }
-            .count-stats .main-count .num { font-size: 32px; }
-            .scan-toggle-btn { font-size: 15px; padding: 14px; }
-            .total-display .number { font-size: 22px; }
+            #app {
+                padding: 12px 10px 16px;
+            }
+
+            .gate-card {
+                padding: 14px 16px;
+                min-height: 72px;
+            }
+
+            .gate-card .gate-count {
+                font-size: 32px;
+            }
+
+            .gate-card .action-btn {
+                font-size: 12px;
+                padding: 8px 12px;
+                min-width: 80px;
+            }
+
+            .count-stats .main-count .num {
+                font-size: 32px;
+            }
+
+            .scan-toggle-btn {
+                font-size: 15px;
+                padding: 14px;
+            }
+
+            .total-display .number {
+                font-size: 22px;
+            }
         }
+
         @media (max-height: 680px) {
-            .gate-card { min-height: 60px; padding: 10px 14px; }
-            .gate-card .gate-count { font-size: 26px; }
-            .count-stats { padding: 8px 14px; }
-            .count-stats .main-count .num { font-size: 26px; }
-            .scanner-wrapper { min-height: 120px; }
-            .app-header { padding-bottom: 8px; margin-bottom: 6px; }
-            .gate-view-header { padding-bottom: 8px; margin-bottom: 8px; }
+            .gate-card {
+                min-height: 60px;
+                padding: 10px 14px;
+            }
+
+            .gate-card .gate-count {
+                font-size: 26px;
+            }
+
+            .count-stats {
+                padding: 8px 14px;
+            }
+
+            .count-stats .main-count .num {
+                font-size: 26px;
+            }
+
+            .scanner-wrapper {
+                min-height: 120px;
+            }
+
+            .app-header {
+                padding-bottom: 8px;
+                margin-bottom: 6px;
+            }
+
+            .gate-view-header {
+                padding-bottom: 8px;
+                margin-bottom: 8px;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <!-- ─── FLASH / TOAST ─── -->
@@ -767,7 +911,7 @@
                 try {
                     const arr = JSON.parse(stored);
                     arr.forEach(qr => scannedSet.add(qr));
-                } catch (_) {}
+                } catch (_) { }
             }
         }
         loadGlobalScanned();
@@ -894,7 +1038,7 @@
 
         function stopScannerSync() {
             if (html5QrCode && isScannerRunning) {
-                try { html5QrCode.stop(); html5QrCode.clear(); } catch (_) {}
+                try { html5QrCode.stop(); html5QrCode.clear(); } catch (_) { }
                 isScannerRunning = false;
                 scannerPlaceholder.classList.remove('hidden');
                 scanToggleBtn.innerHTML = '<span class="icon">📷</span> Open Camera';
@@ -1021,9 +1165,10 @@
 
         window.addEventListener('beforeunload', () => {
             if (html5QrCode && isScannerRunning) {
-                try { html5QrCode.stop(); } catch (_) {}
+                try { html5QrCode.stop(); } catch (_) { }
             }
         });
     </script>
 </body>
+
 </html>
