@@ -887,6 +887,7 @@
         </div>
     </div>
 
+    <!-- ─── SINGLE MERGED SCRIPT BLOCK ─── -->
     <script>
         /* ──────────────────────────────────────────────────────────
            STATE — now with central‑backend ready logic.
@@ -1168,6 +1169,19 @@
                 try { html5QrCode.stop(); } catch (_) { }
             }
         });
+
+        // ─── Register Service Worker (merged into one script) ───
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((reg) => {
+                        console.log('✅ Service Worker registered! Scope:', reg.scope);
+                    })
+                    .catch((err) => {
+                        console.log('❌ Service Worker registration failed:', err);
+                    });
+            });
+        }
     </script>
 </body>
 
