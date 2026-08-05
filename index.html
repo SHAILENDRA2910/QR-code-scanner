@@ -41,6 +41,14 @@
             --gate2-glow: rgba(59, 130, 246, 0.25);
             --gate2-bg: rgba(59, 130, 246, 0.08);
 
+            --gate3-primary: #10B981;
+            --gate3-glow: rgba(16, 185, 129, 0.25);
+            --gate3-bg: rgba(16, 185, 129, 0.08);
+
+            --gate4-primary: #F59E0B;
+            --gate4-glow: rgba(245, 158, 11, 0.25);
+            --gate4-bg: rgba(245, 158, 11, 0.08);
+
             --accent-gold: #C69C5A;
             --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
             --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -193,7 +201,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             padding: 4px 0 6px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -203,65 +211,37 @@
             background: transparent;
         }
 
-        /* ── NEW: Stats Row ── */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+        /* ── Total Display (Big) ── */
+        .total-display-big {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
             flex-shrink: 0;
             margin-bottom: 4px;
         }
-        .stat-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-light);
-            border-radius: var(--radius-sm);
-            padding: 10px 8px;
-            text-align: center;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-        .stat-item .stat-number {
-            font-size: 28px;
+        .total-display-big .total-number {
+            font-size: 56px;
             font-weight: 800;
+            letter-spacing: -2px;
+            color: var(--text-primary);
             line-height: 1.1;
             font-variant-numeric: tabular-nums;
-            letter-spacing: -0.5px;
-            color: var(--text-primary);
-            transition: var(--transition);
         }
-        .stat-item .stat-number.g1 {
-            color: var(--gate1-primary);
-        }
-        .stat-item .stat-number.g2 {
-            color: var(--gate2-primary);
-        }
-        .stat-item .stat-label {
-            font-size: 10px;
+        .total-display-big .total-label {
+            font-size: 14px;
             font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 1px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+        .total-display-big .total-sub {
+            font-size: 11px;
             color: var(--text-muted);
-        }
-        .stat-item .stat-sub {
-            font-size: 9px;
-            color: var(--text-muted);
-            opacity: 0.6;
-            margin-top: -1px;
-        }
-        .stat-item:active {
-            transform: scale(0.96);
-        }
-        .stat-item.highlight-g1 {
-            border-color: var(--gate1-primary);
-            background: var(--gate1-bg);
-        }
-        .stat-item.highlight-g2 {
-            border-color: var(--gate2-primary);
-            background: var(--gate2-bg);
+            margin-top: 2px;
         }
 
         /* ── Gate Cards ── */
@@ -269,14 +249,14 @@
             background: var(--bg-card);
             border: 1px solid var(--border-light);
             border-radius: var(--radius-md);
-            padding: 18px 20px 16px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: all var(--transition);
             box-shadow: var(--shadow-md);
             position: relative;
-            min-height: 80px;
+            min-height: 68px;
             cursor: pointer;
             flex-shrink: 0;
         }
@@ -290,11 +270,17 @@
         .gate-card.gate-2 {
             border-left: 5px solid var(--gate2-primary);
         }
+        .gate-card.gate-3 {
+            border-left: 5px solid var(--gate3-primary);
+        }
+        .gate-card.gate-4 {
+            border-left: 5px solid var(--gate4-primary);
+        }
 
         .gate-card .info {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 1px;
         }
         .gate-card .gate-label {
             font-size: 13px;
@@ -304,7 +290,7 @@
             color: var(--text-secondary);
         }
         .gate-card .gate-count {
-            font-size: 40px;
+            font-size: 36px;
             font-weight: 800;
             line-height: 1.1;
             font-variant-numeric: tabular-nums;
@@ -316,46 +302,30 @@
         .gate-card.gate-2 .gate-count {
             color: var(--gate2-primary);
         }
+        .gate-card.gate-3 .gate-count {
+            color: var(--gate3-primary);
+        }
+        .gate-card.gate-4 .gate-count {
+            color: var(--gate4-primary);
+        }
         .gate-card .gate-sub {
             font-size: 11px;
             color: var(--text-muted);
             font-weight: 500;
         }
 
-        .gate-card .action-btn {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-light);
-            color: var(--text-primary);
-            padding: 10px 18px;
-            border-radius: 40px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-            min-width: 100px;
-            justify-content: center;
-            pointer-events: auto;
+        .gate-card .gate-arrow {
+            font-size: 22px;
+            color: var(--text-muted);
+            opacity: 0.5;
+            transition: var(--transition);
         }
-        .gate-card .action-btn:active {
-            transform: scale(0.94);
+        .gate-card:active .gate-arrow {
+            transform: translateX(4px);
+            opacity: 0.8;
         }
 
-        .gate-card.gate-1 .action-btn:active {
-            border-color: var(--gate1-primary);
-            color: var(--gate1-primary);
-            background: var(--gate1-bg);
-        }
-        .gate-card.gate-2 .action-btn:active {
-            border-color: var(--gate2-primary);
-            color: var(--gate2-primary);
-            background: var(--gate2-bg);
-        }
-
-        /* ── NEW: Recent Activity ── */
+        /* ── Recent Activity ── */
         .recent-activity {
             background: var(--bg-card);
             border: 1px solid var(--border-light);
@@ -364,7 +334,7 @@
             flex-shrink: 0;
             box-shadow: var(--shadow-sm);
             margin-top: 2px;
-            min-height: 62px;
+            min-height: 56px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -440,6 +410,12 @@
         .recent-chip .dot.g2 {
             background: var(--gate2-primary);
         }
+        .recent-chip .dot.g3 {
+            background: var(--gate3-primary);
+        }
+        .recent-chip .dot.g4 {
+            background: var(--gate4-primary);
+        }
         .recent-chip .time-tag {
             font-size: 9px;
             font-weight: 500;
@@ -458,48 +434,32 @@
             }
         }
 
-        /* ── Footer ── */
+        /* ── Footer with Three-Dot Menu ── */
         .dash-footer {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
-            padding-top: 12px;
+            padding-top: 10px;
             flex-shrink: 0;
             border-top: 1px solid var(--border-light);
-            margin-top: 4px;
-            flex-wrap: wrap;
-            gap: 8px;
+            margin-top: 2px;
         }
-        .total-display {
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-        }
-        .total-display .label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        .total-display .number {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--text-primary);
-            font-variant-numeric: tabular-nums;
-        }
-
         .menu-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 20px;
-            padding: 0 10px;
+            font-size: 22px;
+            padding: 4px 12px;
             cursor: pointer;
             transition: var(--transition);
             line-height: 1;
+            letter-spacing: 2px;
+            border-radius: 8px;
         }
         .menu-btn:active {
+            background: var(--bg-card-hover);
             color: var(--text-secondary);
-            transform: scale(0.9);
+            transform: scale(0.92);
         }
 
         /* ───────────── GATE VIEW ───────────── */
@@ -543,6 +503,12 @@
         }
         .gate-view-title .g2 {
             color: var(--gate2-primary);
+        }
+        .gate-view-title .g3 {
+            color: var(--gate3-primary);
+        }
+        .gate-view-title .g4 {
+            color: var(--gate4-primary);
         }
 
         .gate-reset-btn {
@@ -591,6 +557,12 @@
         }
         .count-stats .main-count .num.g2 {
             color: var(--gate2-primary);
+        }
+        .count-stats .main-count .num.g3 {
+            color: var(--gate3-primary);
+        }
+        .count-stats .main-count .num.g4 {
+            color: var(--gate4-primary);
         }
         .count-stats .main-count .num.bounce {
             animation: bounce 0.35s ease;
@@ -833,6 +805,16 @@
             border-color: var(--gate2-primary);
             color: var(--gate2-primary);
         }
+        .scan-toggle-btn.active-g3 {
+            background: var(--gate3-bg);
+            border-color: var(--gate3-primary);
+            color: var(--gate3-primary);
+        }
+        .scan-toggle-btn.active-g4 {
+            background: var(--gate4-bg);
+            border-color: var(--gate4-primary);
+            color: var(--gate4-primary);
+        }
 
         /* ───────────── TOAST / FLASH / CHECKMARK ───────────── */
         .flash-overlay {
@@ -852,6 +834,12 @@
         }
         .flash-overlay.gold {
             background: rgba(59, 130, 246, 0.15);
+        }
+        .flash-overlay.emerald {
+            background: rgba(16, 185, 129, 0.15);
+        }
+        .flash-overlay.amber {
+            background: rgba(245, 158, 11, 0.15);
         }
         .flash-overlay.red {
             background: rgba(190, 70, 50, 0.15);
@@ -926,6 +914,16 @@
             color: var(--gate2-primary);
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
+        .toast .badge.g3 {
+            background: var(--gate3-bg);
+            color: var(--gate3-primary);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .toast .badge.g4 {
+            background: var(--gate4-bg);
+            color: var(--gate4-primary);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
         .toast .badge.err {
             background: rgba(190, 70, 50, 0.08);
             color: #B4503C;
@@ -999,17 +997,15 @@
             #app {
                 padding: 12px 10px 16px;
             }
+            .total-display-big .total-number {
+                font-size: 42px;
+            }
             .gate-card {
-                padding: 14px 16px;
-                min-height: 68px;
+                padding: 12px 16px;
+                min-height: 56px;
             }
             .gate-card .gate-count {
-                font-size: 30px;
-            }
-            .gate-card .action-btn {
-                font-size: 12px;
-                padding: 8px 12px;
-                min-width: 70px;
+                font-size: 28px;
             }
             .count-stats .main-count .num {
                 font-size: 32px;
@@ -1018,24 +1014,12 @@
                 font-size: 15px;
                 padding: 14px;
             }
-            .total-display .number {
-                font-size: 22px;
-            }
             .header-content h1 {
                 font-size: 16px;
             }
-            .stat-item .stat-number {
-                font-size: 22px;
-            }
-            .stats-row {
-                gap: 6px;
-            }
-            .stat-item {
-                padding: 8px 4px;
-            }
             .recent-activity {
                 padding: 10px 12px;
-                min-height: 54px;
+                min-height: 48px;
             }
             .recent-chip {
                 font-size: 10px;
@@ -1046,12 +1030,18 @@
             }
         }
         @media (max-height: 680px) {
+            .total-display-big .total-number {
+                font-size: 36px;
+            }
+            .total-display-big {
+                padding: 10px 16px;
+            }
             .gate-card {
-                min-height: 56px;
-                padding: 10px 14px;
+                min-height: 48px;
+                padding: 8px 14px;
             }
             .gate-card .gate-count {
-                font-size: 24px;
+                font-size: 22px;
             }
             .count-stats {
                 padding: 8px 14px;
@@ -1071,21 +1061,12 @@
                 padding-bottom: 8px;
                 margin-bottom: 8px;
             }
-            .stat-item .stat-number {
-                font-size: 20px;
-            }
-            .stats-row {
-                gap: 4px;
-            }
-            .stat-item {
-                padding: 6px 4px;
-            }
             .recent-activity {
-                min-height: 44px;
+                min-height: 40px;
                 padding: 8px 12px;
             }
             .dashboard-grid {
-                gap: 8px;
+                gap: 6px;
                 padding: 2px 0 4px;
             }
         }
@@ -1133,23 +1114,11 @@
             </header>
 
             <div class="dashboard-grid">
-                <!-- ─── NEW: Stats Row ─── -->
-                <div class="stats-row" id="statsRow">
-                    <div class="stat-item" id="statTotalItem">
-                        <span class="stat-number" id="statTotal">0</span>
-                        <span class="stat-label">Total</span>
-                        <span class="stat-sub" id="statTotalSub">today</span>
-                    </div>
-                    <div class="stat-item" id="statGate1Item">
-                        <span class="stat-number g1" id="statGate1">0</span>
-                        <span class="stat-label">Gate 1</span>
-                        <span class="stat-sub" id="statGate1Sub">entries</span>
-                    </div>
-                    <div class="stat-item" id="statGate2Item">
-                        <span class="stat-number g2" id="statGate2">0</span>
-                        <span class="stat-label">Gate 2</span>
-                        <span class="stat-sub" id="statGate2Sub">entries</span>
-                    </div>
+                <!-- ─── BIG TOTAL DISPLAY ─── -->
+                <div class="total-display-big">
+                    <div class="total-number" id="bigTotal">0</div>
+                    <div class="total-label">Total Check-ins</div>
+                    <div class="total-sub" id="totalSub">Today</div>
                 </div>
 
                 <!-- Gate 1 Card -->
@@ -1159,7 +1128,7 @@
                         <div class="gate-count" id="dash-count-1">0</div>
                         <div class="gate-sub" id="dash-last-1">Last scan: —</div>
                     </div>
-                    <button class="action-btn">📷 Open</button>
+                    <span class="gate-arrow">→</span>
                 </div>
 
                 <!-- Gate 2 Card -->
@@ -1169,10 +1138,30 @@
                         <div class="gate-count" id="dash-count-2">0</div>
                         <div class="gate-sub" id="dash-last-2">Last scan: —</div>
                     </div>
-                    <button class="action-btn">📷 Open</button>
+                    <span class="gate-arrow">→</span>
                 </div>
 
-                <!-- ─── NEW: Recent Activity ─── -->
+                <!-- Gate 3 Card -->
+                <div class="gate-card gate-3" data-gate="3">
+                    <div class="info">
+                        <div class="gate-label">🚪 Gate 3</div>
+                        <div class="gate-count" id="dash-count-3">0</div>
+                        <div class="gate-sub" id="dash-last-3">Last scan: —</div>
+                    </div>
+                    <span class="gate-arrow">→</span>
+                </div>
+
+                <!-- Gate 4 Card -->
+                <div class="gate-card gate-4" data-gate="4">
+                    <div class="info">
+                        <div class="gate-label">🚪 Gate 4</div>
+                        <div class="gate-count" id="dash-count-4">0</div>
+                        <div class="gate-sub" id="dash-last-4">Last scan: —</div>
+                    </div>
+                    <span class="gate-arrow">→</span>
+                </div>
+
+                <!-- ─── RECENT ACTIVITY ─── -->
                 <div class="recent-activity" id="recentActivity">
                     <div class="recent-header">
                         <span>📋 Recent Check-ins</span>
@@ -1184,12 +1173,9 @@
                 </div>
             </div>
 
+            <!-- ─── FOOTER WITH THREE-DOT MENU ─── -->
             <div class="dash-footer">
-                <div class="total-display">
-                    <span class="label">Total</span>
-                    <span class="number" id="dash-total">0</span>
-                </div>
-                <button class="menu-btn" id="menuBtn" title="Menu">⋮</button>
+                <button class="menu-btn" id="menuBtn" title="Reset options">⋮</button>
             </div>
         </div>
 
@@ -1249,33 +1235,31 @@
     <!-- ─── SINGLE MERGED SCRIPT BLOCK ─── -->
     <script>
         /* ──────────────────────────────────────────────────────────
-           STATE
+           STATE (4 Gates)
            ────────────────────────────────────────────────────────── */
-        let gate1Count = parseInt(localStorage.getItem('event_gate1') || '0');
-        let gate2Count = parseInt(localStorage.getItem('event_gate2') || '0');
+        let gateCounts = {
+            1: parseInt(localStorage.getItem('event_gate1') || '0'),
+            2: parseInt(localStorage.getItem('event_gate2') || '0'),
+            3: parseInt(localStorage.getItem('event_gate3') || '0'),
+            4: parseInt(localStorage.getItem('event_gate4') || '0')
+        };
 
         let lastScans = {
             1: { qr: localStorage.getItem('event_lastQR_1') || null, time: localStorage.getItem('event_lastTime_1') || null },
-            2: { qr: localStorage.getItem('event_lastQR_2') || null, time: localStorage.getItem('event_lastTime_2') || null }
+            2: { qr: localStorage.getItem('event_lastQR_2') || null, time: localStorage.getItem('event_lastTime_2') || null },
+            3: { qr: localStorage.getItem('event_lastQR_3') || null, time: localStorage.getItem('event_lastTime_3') || null },
+            4: { qr: localStorage.getItem('event_lastQR_4') || null, time: localStorage.getItem('event_lastTime_4') || null }
         };
 
-        // ─── Recent Activity History (for dashboard) ───
         let recentActivity = [];
         function loadRecentActivity() {
             const stored = localStorage.getItem('event_recent_activity');
             if (stored) {
-                try {
-                    const parsed = JSON.parse(stored);
-                    if (Array.isArray(parsed)) recentActivity = parsed;
-                } catch (_) {}
+                try { const parsed = JSON.parse(stored); if (Array.isArray(parsed)) recentActivity = parsed; } catch (_) {}
             }
         }
         loadRecentActivity();
-        function persistRecentActivity() {
-            localStorage.setItem('event_recent_activity', JSON.stringify(recentActivity));
-        }
 
-        // ─── Global scanned set (dedupe) ───
         let scannedSet = new Set();
         function loadGlobalScanned() {
             const stored = localStorage.getItem('global_scanned_qrs');
@@ -1284,13 +1268,8 @@
             }
         }
         loadGlobalScanned();
-        function persistGlobalScanned() {
-            localStorage.setItem('global_scanned_qrs', JSON.stringify(Array.from(scannedSet)));
-        }
 
-        // ─── Timeline for gate view ───
         let scanTimeline = [];
-
         let currentGate = 1;
         let isScannerRunning = false;
         let html5QrCode = null;
@@ -1301,11 +1280,26 @@
         const $ = id => document.getElementById(id);
         const dashView = $('dashboard-view');
         const gateView = $('gate-view');
-        const dashCount1 = $('dash-count-1');
-        const dashCount2 = $('dash-count-2');
-        const dashLast1 = $('dash-last-1');
-        const dashLast2 = $('dash-last-2');
-        const dashTotal = $('dash-total');
+
+        // Dashboard elements
+        const bigTotal = $('bigTotal');
+        const recentList = $('recentList');
+        const recentCount = $('recentCount');
+
+        const dashCounts = {
+            1: $('dash-count-1'),
+            2: $('dash-count-2'),
+            3: $('dash-count-3'),
+            4: $('dash-count-4')
+        };
+        const dashLasts = {
+            1: $('dash-last-1'),
+            2: $('dash-last-2'),
+            3: $('dash-last-3'),
+            4: $('dash-last-4')
+        };
+
+        // Gate view elements
         const gateTitleNum = $('gateTitleNum');
         const gateCountNum = $('gateCountNum');
         const lastQRId = $('lastQRId');
@@ -1321,48 +1315,30 @@
         const successCheck = $('successCheck');
         const headerDate = $('headerDate');
 
-        // New dashboard elements
-        const statTotal = $('statTotal');
-        const statGate1 = $('statGate1');
-        const statGate2 = $('statGate2');
-        const statTotalSub = $('statTotalSub');
-        const statGate1Sub = $('statGate1Sub');
-        const statGate2Sub = $('statGate2Sub');
-        const recentList = $('recentList');
-        const recentCount = $('recentCount');
-        const statGate1Item = $('statGate1Item');
-        const statGate2Item = $('statGate2Item');
-
         // ─── INIT DATE ───
         const now = new Date();
         headerDate.textContent = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
         // ─── UI UPDATE ───
         function updateAllUI() {
-            // Gate counts
-            dashCount1.textContent = gate1Count;
-            dashCount2.textContent = gate2Count;
-            dashTotal.textContent = gate1Count + gate2Count;
+            const total = gateCounts[1] + gateCounts[2] + gateCounts[3] + gateCounts[4];
+            bigTotal.textContent = total;
 
-            // Stats row
-            statTotal.textContent = gate1Count + gate2Count;
-            statGate1.textContent = gate1Count;
-            statGate2.textContent = gate2Count;
-
-            // Highlight stat if gate has entries
-            statGate1Item.classList.toggle('highlight-g1', gate1Count > 0);
-            statGate2Item.classList.toggle('highlight-g2', gate2Count > 0);
-
-            // Last scans
             const fmtTime = (ts) => ts ? new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',
                 second: '2-digit' }) : '—';
-            dashLast1.textContent = `Last scan: ${lastScans[1].qr ? fmtTime(lastScans[1].time) : '—'}`;
-            dashLast2.textContent = `Last scan: ${lastScans[2].qr ? fmtTime(lastScans[2].time) : '—'}`;
+            for (let i = 1; i <= 4; i++) {
+                dashCounts[i].textContent = gateCounts[i];
+                dashLasts[i].textContent = `Last scan: ${lastScans[i].qr ? fmtTime(lastScans[i].time) : '—'}`;
+                localStorage.setItem(`event_gate${i}`, String(gateCounts[i]));
+                localStorage.setItem(`event_lastQR_${i}`, lastScans[i].qr || '');
+                localStorage.setItem(`event_lastTime_${i}`, lastScans[i].time || '');
+            }
 
-            // Gate view count
-            const count = currentGate === 1 ? gate1Count : gate2Count;
+            // Gate view
+            const count = gateCounts[currentGate];
             gateCountNum.textContent = count;
-            gateCountNum.className = 'num ' + (currentGate === 1 ? 'g1' : 'g2');
+            const gateClass = `g${currentGate}`;
+            gateCountNum.className = `num ${gateClass}`;
 
             const last = lastScans[currentGate];
             lastQRId.textContent = last.qr || '—';
@@ -1370,20 +1346,11 @@
                 minute: '2-digit', second: '2-digit' }) : 'No scans yet';
 
             gateTitleNum.textContent = currentGate;
-            gateTitleNum.className = currentGate === 1 ? 'g1' : 'g2';
-
-            // Persist
-            localStorage.setItem('event_gate1', String(gate1Count));
-            localStorage.setItem('event_gate2', String(gate2Count));
-            localStorage.setItem('event_lastQR_1', lastScans[1].qr || '');
-            localStorage.setItem('event_lastTime_1', lastScans[1].time || '');
-            localStorage.setItem('event_lastQR_2', lastScans[2].qr || '');
-            localStorage.setItem('event_lastTime_2', lastScans[2].time || '');
+            gateTitleNum.className = gateClass;
 
             onlineBadge.textContent = '● Online';
             onlineBadge.className = 'header-badge';
 
-            // Pending badge
             if (pendingOfflineCount > 0) {
                 pendingBadge.style.display = 'inline';
                 pendingBadge.textContent = `${pendingOfflineCount} pending`;
@@ -1391,7 +1358,6 @@
                 pendingBadge.style.display = 'none';
             }
 
-            // Recent activity
             renderRecentActivity();
         }
 
@@ -1403,18 +1369,13 @@
 
         // ─── RECENT ACTIVITY RENDER ───
         function renderRecentActivity() {
-            const list = recentList;
-            const count = recentCount;
-            count.textContent = recentActivity.length;
-
+            recentCount.textContent = recentActivity.length;
             if (recentActivity.length === 0) {
-                list.innerHTML = '<span class="empty">No recent activity</span>';
+                recentList.innerHTML = '<span class="empty">No recent activity</span>';
                 return;
             }
-
-            // Show last 6
             const items = recentActivity.slice(0, 6);
-            list.innerHTML = '';
+            recentList.innerHTML = '';
             items.forEach(entry => {
                 const chip = document.createElement('span');
                 chip.className = 'recent-chip';
@@ -1423,17 +1384,15 @@
                 const qrShort = entry.qr.length > 8 ? entry.qr.substring(0, 8) : entry.qr;
                 const timeStr = entry.time ? new Date(entry.time).toLocaleTimeString([], { hour: '2-digit',
                     minute: '2-digit' }) : '';
-                chip.innerHTML = '';
                 chip.appendChild(dot);
-                const text = document.createTextNode(qrShort);
-                chip.appendChild(text);
+                chip.appendChild(document.createTextNode(qrShort));
                 if (timeStr) {
                     const tag = document.createElement('span');
                     tag.className = 'time-tag';
                     tag.textContent = timeStr;
                     chip.appendChild(tag);
                 }
-                list.appendChild(chip);
+                recentList.appendChild(chip);
             });
         }
 
@@ -1459,18 +1418,20 @@
             updateAllUI();
         }
 
-        // ─── CLICKABLE CARDS ───
+        // ─── CLICKABLE GATE CARDS ───
         document.querySelectorAll('.gate-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('.action-btn')) return;
+            card.addEventListener('click', () => {
                 const gate = parseInt(card.dataset.gate);
                 openGateView(gate);
             });
         });
 
-        // ─── MENU BUTTON ───
+        // ─── THREE-DOT MENU ───
         document.getElementById('menuBtn').addEventListener('click', async () => {
-            const confirmed = await showConfirmModal('Reset Everything?', 'This will clear all counters, history, and the global scan log. Cannot be undone.');
+            const confirmed = await showConfirmModal(
+                'Reset Everything?',
+                'This will clear all counters, history, and the global scan log. This action cannot be undone.'
+            );
             if (confirmed) resetAll();
         });
 
@@ -1516,7 +1477,7 @@
                 scannerPlaceholder.classList.add('hidden');
                 scannerOverlay.classList.add('active');
 
-                const gateClass = currentGate === 1 ? 'active-g1' : 'active-g2';
+                const gateClass = `active-g${currentGate}`;
                 scanToggleBtn.innerHTML = '<span class="icon">⏹</span> Close Camera';
                 scanToggleBtn.className = `scan-toggle-btn ${gateClass}`;
 
@@ -1554,35 +1515,31 @@
                 return;
             }
 
-            // Update counters
-            if (currentGate === 1) gate1Count++;
-            else gate2Count++;
-
+            gateCounts[currentGate]++;
             scannedSet.add(qr);
             persistGlobalScanned();
 
             const nowISO = new Date().toISOString();
             lastScans[currentGate] = { qr: qr, time: nowISO };
 
-            // Add to recent activity
             recentActivity.unshift({ qr: qr, gate: currentGate, time: nowISO });
             if (recentActivity.length > 20) recentActivity.pop();
             persistRecentActivity();
 
-            // Update timeline (gate view)
             scanTimeline.unshift(qr.substring(0, 8));
             if (scanTimeline.length > 3) scanTimeline.pop();
             renderTimeline();
 
             updateAllUI();
             bounceCount();
-            flashScreen(currentGate);
+
+            const flashMap = { 1: 'green', 2: 'gold', 3: 'emerald', 4: 'amber' };
+            flashScreen(flashMap[currentGate]);
             if (navigator.vibrate) navigator.vibrate(30);
 
             showSuccessCheckmark();
             showToast('✓ Entry recorded', currentGate, 900);
 
-            // Auto-close camera after successful scan (optional)
             setTimeout(() => {
                 if (isScannerRunning) {
                     stopScannerSync();
@@ -1595,7 +1552,7 @@
 
         function onScanError(err) { /* ignore */ }
 
-        // ─── TIMELINE RENDER (gate view) ───
+        // ─── TIMELINE RENDER ───
         function renderTimeline() {
             visitorList.innerHTML = '';
             if (scanTimeline.length === 0) {
@@ -1610,7 +1567,6 @@
             });
         }
 
-        // ─── SUCCESS CHECKMARK ───
         function showSuccessCheckmark() {
             const el = successCheck;
             el.classList.remove('show');
@@ -1622,17 +1578,12 @@
 
         // ─── RESET ───
         async function resetCurrentGate() {
-            const count = currentGate === 1 ? gate1Count : gate2Count;
-            if (count === 0) return;
-
+            if (gateCounts[currentGate] === 0) return;
             const confirmed = await showConfirmModal(`Reset Gate ${currentGate}?`, `This will reset the counter for Gate ${currentGate} and clear its last scan.`);
             if (!confirmed) return;
 
-            if (currentGate === 1) gate1Count = 0;
-            else gate2Count = 0;
-
+            gateCounts[currentGate] = 0;
             lastScans[currentGate] = { qr: null, time: null };
-            // Also remove this gate's entries from recent activity
             recentActivity = recentActivity.filter(e => e.gate !== currentGate);
             persistRecentActivity();
 
@@ -1643,11 +1594,10 @@
         }
 
         function resetAll() {
-            if (gate1Count === 0 && gate2Count === 0 && scannedSet.size === 0 && recentActivity.length === 0) return;
+            if (Object.values(gateCounts).every(v => v === 0) && scannedSet.size === 0 && recentActivity.length === 0) return;
 
-            gate1Count = 0;
-            gate2Count = 0;
-            lastScans = { 1: { qr: null, time: null }, 2: { qr: null, time: null } };
+            for (let i = 1; i <= 4; i++) gateCounts[i] = 0;
+            for (let i = 1; i <= 4; i++) lastScans[i] = { qr: null, time: null };
             scannedSet.clear();
             persistGlobalScanned();
             recentActivity = [];
@@ -1659,14 +1609,20 @@
             if (navigator.vibrate) navigator.vibrate(30);
         }
 
+        function persistGlobalScanned() {
+            localStorage.setItem('global_scanned_qrs', JSON.stringify(Array.from(scannedSet)));
+        }
+
+        function persistRecentActivity() {
+            localStorage.setItem('event_recent_activity', JSON.stringify(recentActivity));
+        }
+
         // ─── FEEDBACK ───
-        function flashScreen(type) {
+        function flashScreen(colorClass) {
             const el = flashOverlay;
             el.className = 'flash-overlay';
             void el.offsetWidth;
-            if (type === 1) el.classList.add('green');
-            else if (type === 2) el.classList.add('gold');
-            else if (type === 'red') el.classList.add('red');
+            if (colorClass) el.classList.add(colorClass);
             el.classList.add('show');
             clearTimeout(el._timer);
             el._timer = setTimeout(() => el.classList.remove('show'), 180);
@@ -1680,8 +1636,7 @@
                 b.textContent = badgeType === 'err' ? '⛔' : `Gate ${badgeType}`;
                 toast.appendChild(b);
             }
-            const text = document.createTextNode(' ' + message);
-            toast.appendChild(text);
+            toast.appendChild(document.createTextNode(' ' + message));
             toast.classList.add('show');
             clearTimeout(toast._hideTimer);
             toast._hideTimer = setTimeout(() => toast.classList.remove('show'), duration);
@@ -1689,17 +1644,20 @@
 
         // ─── KEYBOARD ───
         document.addEventListener('keydown', (e) => {
-            if (e.key === '1') { if (dashView.classList.contains('active')) openGateView(1); } else if (e.key ===
-                '2') { if (dashView.classList.contains('active')) openGateView(2); } else if (e.key === 'Escape') { if (
-                    gateView.classList.contains('active')) closeGateView(); } else if (e.key === ' ' || e.key ===
-                'Space') { if (gateView.classList.contains('active')) { e.preventDefault();
-                    toggleScanner(); } }
+            if (e.key >= '1' && e.key <= '4') {
+                if (dashView.classList.contains('active')) openGateView(parseInt(e.key));
+            } else if (e.key === 'Escape') {
+                if (gateView.classList.contains('active')) closeGateView();
+            } else if (e.key === ' ' || e.key === 'Space') {
+                if (gateView.classList.contains('active')) { e.preventDefault();
+                    toggleScanner(); }
+            }
         });
 
         // ─── INIT ───
         updateAllUI();
         renderTimeline();
-        console.log(`🐿️ Gold Squirrel Event Scanner ready. Gate1: ${gate1Count}, Gate2: ${gate2Count}, global unique: ${scannedSet.size}, recent: ${recentActivity.length}`);
+        console.log(`🐿️ Gold Squirrel Event Scanner ready. Gates: 1:${gateCounts[1]}, 2:${gateCounts[2]}, 3:${gateCounts[3]}, 4:${gateCounts[4]}`);
 
         window.addEventListener('beforeunload', () => {
             if (html5QrCode && isScannerRunning) {
