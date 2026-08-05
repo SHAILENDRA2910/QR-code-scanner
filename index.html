@@ -25,29 +25,25 @@
         }
 
         :root {
-            /* Light, warm, company-friendly palette */
             --bg-primary: #FBF8F4;
-            /* soft ivory */
             --bg-card: #FFFFFF;
             --bg-card-hover: #F5F0EA;
             --border-light: #E5DDD3;
-            --text-primary: #C69C5A;
-            /* warm dark */
+            --text-primary: #1A1512;
             --text-secondary: #6B5F4E;
             --text-muted: #A69682;
 
             --gate1-primary: #B88A4B;
-            /* gold / squirrel */
-            --gate1-glow: rgba(184, 138, 75, 0.20);
+            --gate1-glow: rgba(184, 138, 75, 0.25);
             --gate1-bg: rgba(184, 138, 75, 0.08);
 
-            --gate2-primary: #8F7A5C;
-            /* warm earth */
-            --gate2-glow: rgba(143, 122, 92, 0.20);
-            --gate2-bg: rgba(143, 122, 92, 0.08);
+            --gate2-primary: #3B82F6;
+            --gate2-glow: rgba(59, 130, 246, 0.25);
+            --gate2-bg: rgba(59, 130, 246, 0.08);
 
             --accent-gold: #C69C5A;
-            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
             --radius-lg: 28px;
             --radius-md: 18px;
             --radius-sm: 14px;
@@ -80,7 +76,6 @@
             overflow: hidden;
         }
 
-        /* subtle warm glow */
         #app::before {
             content: '';
             position: absolute;
@@ -88,7 +83,7 @@
             right: -20%;
             width: 70%;
             height: 60%;
-            background: radial-gradient(circle, rgba(184, 138, 75, 0.05) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(184, 138, 75, 0.04) 0%, transparent 70%);
             pointer-events: none;
             z-index: 0;
         }
@@ -102,7 +97,6 @@
             z-index: 1;
             animation: fadeIn 0.25s ease;
         }
-
         .view.active {
             display: flex;
         }
@@ -112,14 +106,13 @@
                 opacity: 0;
                 transform: translateY(12px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        /* ───────────── HEADER (brand) ───────────── */
+        /* ───────────── HEADER ───────────── */
         .app-header {
             display: flex;
             align-items: center;
@@ -132,8 +125,8 @@
 
         .logo-wrapper {
             flex-shrink: 0;
-            width: 52px;
-            height: 52px;
+            width: 48px;
+            height: 48px;
             border-radius: 14px;
             background: #FDF9F4;
             border: 1px solid var(--border-light);
@@ -141,10 +134,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 6px;
+            padding: 5px;
             overflow: hidden;
         }
-
         .logo-wrapper img {
             width: 100%;
             height: 100%;
@@ -152,23 +144,48 @@
             display: block;
         }
 
-        .header-text h1 {
-            font-size: 20px;
+        .header-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .header-content h1 {
+            font-size: 18px;
             font-weight: 700;
             letter-spacing: -0.3px;
             color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-
-        .header-text .sub {
+        .header-content .sub {
             font-size: 12px;
             font-weight: 500;
             color: var(--text-secondary);
-            letter-spacing: 0.2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
         }
-
         .brand-gold {
             color: var(--accent-gold);
             font-weight: 700;
+        }
+
+        .header-badge {
+            font-size: 10px;
+            font-weight: 700;
+            background: #E8F0E6;
+            color: #2A6B3A;
+            padding: 2px 10px;
+            border-radius: 40px;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .header-badge.pending {
+            background: #F5E8E6;
+            color: #A34A3A;
         }
 
         /* ───────────── DASHBOARD ───────────── */
@@ -176,29 +193,100 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            gap: 18px;
-            padding: 8px 0;
+            gap: 12px;
+            padding: 4px 0 6px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .dashboard-grid::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
         }
 
+        /* ── NEW: Stats Row ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            flex-shrink: 0;
+            margin-bottom: 4px;
+        }
+        .stat-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 10px 8px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .stat-item .stat-number {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+        .stat-item .stat-number.g1 {
+            color: var(--gate1-primary);
+        }
+        .stat-item .stat-number.g2 {
+            color: var(--gate2-primary);
+        }
+        .stat-item .stat-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+        .stat-item .stat-sub {
+            font-size: 9px;
+            color: var(--text-muted);
+            opacity: 0.6;
+            margin-top: -1px;
+        }
+        .stat-item:active {
+            transform: scale(0.96);
+        }
+        .stat-item.highlight-g1 {
+            border-color: var(--gate1-primary);
+            background: var(--gate1-bg);
+        }
+        .stat-item.highlight-g2 {
+            border-color: var(--gate2-primary);
+            background: var(--gate2-bg);
+        }
+
+        /* ── Gate Cards ── */
         .gate-card {
             background: var(--bg-card);
             border: 1px solid var(--border-light);
             border-radius: var(--radius-md);
-            padding: 20px 22px 18px;
+            padding: 18px 20px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: all var(--transition);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-md);
             position: relative;
-            min-height: 90px;
+            min-height: 80px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .gate-card:active {
+            transform: scale(0.98);
         }
 
         .gate-card.gate-1 {
             border-left: 5px solid var(--gate1-primary);
         }
-
         .gate-card.gate-2 {
             border-left: 5px solid var(--gate2-primary);
         }
@@ -208,7 +296,6 @@
             flex-direction: column;
             gap: 2px;
         }
-
         .gate-card .gate-label {
             font-size: 13px;
             font-weight: 600;
@@ -216,23 +303,19 @@
             letter-spacing: 0.6px;
             color: var(--text-secondary);
         }
-
         .gate-card .gate-count {
-            font-size: 44px;
+            font-size: 40px;
             font-weight: 800;
             line-height: 1.1;
             font-variant-numeric: tabular-nums;
             letter-spacing: -1px;
         }
-
         .gate-card.gate-1 .gate-count {
             color: var(--gate1-primary);
         }
-
         .gate-card.gate-2 .gate-count {
             color: var(--gate2-primary);
         }
-
         .gate-card .gate-sub {
             font-size: 11px;
             color: var(--text-muted);
@@ -253,13 +336,12 @@
             align-items: center;
             gap: 6px;
             white-space: nowrap;
-            min-width: 110px;
+            min-width: 100px;
             justify-content: center;
+            pointer-events: auto;
         }
-
         .gate-card .action-btn:active {
             transform: scale(0.94);
-            background: var(--bg-card-hover);
         }
 
         .gate-card.gate-1 .action-btn:active {
@@ -267,78 +349,157 @@
             color: var(--gate1-primary);
             background: var(--gate1-bg);
         }
-
         .gate-card.gate-2 .action-btn:active {
             border-color: var(--gate2-primary);
             color: var(--gate2-primary);
             background: var(--gate2-bg);
         }
 
-        /* Dashboard footer */
+        /* ── NEW: Recent Activity ── */
+        .recent-activity {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+            margin-top: 2px;
+            min-height: 62px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .recent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+        }
+        .recent-header span:first-child {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .recent-count {
+            background: var(--bg-primary);
+            padding: 0 10px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            border: 1px solid var(--border-light);
+        }
+
+        .recent-list {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 2px 0 6px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .recent-list::-webkit-scrollbar {
+            display: none;
+        }
+        .recent-list .empty {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 4px 0;
+            width: 100%;
+            text-align: center;
+            opacity: 0.6;
+        }
+        .recent-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 40px;
+            padding: 4px 14px 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-family: 'SF Mono', 'Courier New', monospace;
+            color: var(--text-secondary);
+            animation: slideIn 0.3s ease;
+        }
+        .recent-chip .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .recent-chip .dot.g1 {
+            background: var(--gate1-primary);
+        }
+        .recent-chip .dot.g2 {
+            background: var(--gate2-primary);
+        }
+        .recent-chip .time-tag {
+            font-size: 9px;
+            font-weight: 500;
+            color: var(--text-muted);
+            font-family: var(--font);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateX(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateX(0);
+            }
+        }
+
+        /* ── Footer ── */
         .dash-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 14px;
+            padding-top: 12px;
             flex-shrink: 0;
             border-top: 1px solid var(--border-light);
-            margin-top: 6px;
+            margin-top: 4px;
             flex-wrap: wrap;
             gap: 8px;
         }
-
         .total-display {
             display: flex;
             align-items: baseline;
             gap: 8px;
         }
-
         .total-display .label {
             font-size: 13px;
             color: var(--text-secondary);
             font-weight: 500;
         }
-
         .total-display .number {
             font-size: 28px;
             font-weight: 800;
-            color: var(--gate1-primary);
+            color: var(--text-primary);
             font-variant-numeric: tabular-nums;
         }
 
-        .dash-footer .status-badge {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 14px;
-            border-radius: 30px;
-            background: #E8F0E6;
-            color: #2A6B3A;
-            border: 1px solid #C6DCC2;
-        }
-
-        .dash-footer .status-badge.offline {
-            background: #F5E8E6;
-            color: #A34A3A;
-            border-color: #E5CBC6;
-        }
-
-        .reset-all-btn {
+        .menu-btn {
             background: transparent;
-            border: 1px solid var(--border-light);
+            border: none;
             color: var(--text-muted);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 20px;
+            padding: 0 10px;
             cursor: pointer;
             transition: var(--transition);
-            letter-spacing: 0.3px;
+            line-height: 1;
         }
-
-        .reset-all-btn:active {
-            background: rgba(180, 80, 60, 0.06);
-            border-color: rgba(180, 80, 60, 0.2);
-            color: #B4503C;
+        .menu-btn:active {
+            color: var(--text-secondary);
+            transform: scale(0.9);
         }
 
         /* ───────────── GATE VIEW ───────────── */
@@ -351,7 +512,6 @@
             border-bottom: 1px solid var(--border-light);
             margin-bottom: 14px;
         }
-
         .back-btn {
             background: var(--bg-card);
             border: 1px solid var(--border-light);
@@ -367,7 +527,6 @@
             justify-content: center;
             box-shadow: var(--shadow-sm);
         }
-
         .back-btn:active {
             transform: scale(0.90);
             background: var(--bg-card-hover);
@@ -379,11 +538,9 @@
             font-weight: 700;
             letter-spacing: -0.3px;
         }
-
         .gate-view-title .g1 {
             color: var(--gate1-primary);
         }
-
         .gate-view-title .g2 {
             color: var(--gate2-primary);
         }
@@ -399,13 +556,11 @@
             transition: var(--transition);
             border-radius: 20px;
         }
-
         .gate-reset-btn:active {
             background: rgba(180, 80, 60, 0.05);
             color: #B4503C;
         }
 
-        /* Count + Last Scan row */
         .count-stats {
             display: flex;
             align-items: center;
@@ -420,28 +575,37 @@
             flex-wrap: wrap;
             box-shadow: var(--shadow-sm);
         }
-
         .count-stats .main-count {
             display: flex;
             align-items: baseline;
             gap: 8px;
         }
-
         .count-stats .main-count .num {
             font-size: 44px;
             font-weight: 800;
             font-variant-numeric: tabular-nums;
             transition: var(--transition);
         }
-
         .count-stats .main-count .num.g1 {
             color: var(--gate1-primary);
         }
-
         .count-stats .main-count .num.g2 {
             color: var(--gate2-primary);
         }
-
+        .count-stats .main-count .num.bounce {
+            animation: bounce 0.35s ease;
+        }
+        @keyframes bounce {
+            0% {
+                transform: scale(1);
+            }
+            40% {
+                transform: scale(1.24);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
         .count-stats .main-count .label {
             font-size: 12px;
             color: var(--text-muted);
@@ -454,23 +618,29 @@
             color: var(--text-secondary);
             line-height: 1.4;
         }
-
         .count-stats .last-info .qr-id {
             font-family: 'SF Mono', 'Courier New', monospace;
             font-size: 13px;
             font-weight: 600;
             color: var(--text-primary);
         }
-
         .count-stats .last-info .time {
             font-size: 11px;
             color: var(--text-muted);
         }
 
-        /* Scanner */
+        /* ── Scanner ── */
+        .scanner-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 0;
+        }
         .scanner-wrapper {
             flex: 1;
-            min-height: 200px;
+            min-height: 140px;
+            max-height: 280px;
             background: #F2EDE6;
             border-radius: var(--radius-sm);
             overflow: hidden;
@@ -481,13 +651,11 @@
             justify-content: center;
             box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.02);
         }
-
         #scanner-container {
             width: 100%;
             height: 100%;
             position: relative;
         }
-
         #scanner-container video {
             width: 100% !important;
             height: 100% !important;
@@ -512,17 +680,14 @@
             padding: 20px;
             text-align: center;
         }
-
         .scanner-placeholder.hidden {
             opacity: 0;
             pointer-events: none;
         }
-
         .scanner-placeholder .big-icon {
             font-size: 44px;
             opacity: 0.4;
         }
-
         .scanner-placeholder .sub {
             font-size: 12px;
             opacity: 0.6;
@@ -533,43 +698,106 @@
             inset: 0;
             pointer-events: none;
             z-index: 3;
+            display: none;
+        }
+        .scanner-overlay.active {
+            display: block;
         }
 
         .scanner-overlay .corner {
             position: absolute;
             width: 24px;
             height: 24px;
-            border-color: rgba(44, 36, 26, 0.3);
+            border-color: rgba(255, 255, 255, 0.8);
             border-style: solid;
             border-width: 0;
+            transition: all 0.3s;
         }
-
         .scanner-overlay .corner.tl {
             top: 16px;
             left: 16px;
             border-top-width: 3px;
             border-left-width: 3px;
         }
-
         .scanner-overlay .corner.tr {
             top: 16px;
             right: 16px;
             border-top-width: 3px;
             border-right-width: 3px;
         }
-
         .scanner-overlay .corner.bl {
             bottom: 16px;
             left: 16px;
             border-bottom-width: 3px;
             border-left-width: 3px;
         }
-
         .scanner-overlay .corner.br {
             bottom: 16px;
             right: 16px;
             border-bottom-width: 3px;
             border-right-width: 3px;
+        }
+
+        .scan-line {
+            position: absolute;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: linear-gradient(to right, transparent, #fff, transparent);
+            top: 10%;
+            opacity: 0.6;
+            animation: scanMove 2s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+        }
+        @keyframes scanMove {
+            0% {
+                top: 10%;
+                opacity: 0.2;
+            }
+            50% {
+                top: 80%;
+                opacity: 0.9;
+            }
+            100% {
+                top: 10%;
+                opacity: 0.2;
+            }
+        }
+
+        .visitor-timeline {
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-sm);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 44px;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+        }
+        .visitor-timeline .label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .visitor-timeline .list {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            overflow: hidden;
+        }
+        .visitor-timeline .item {
+            background: var(--bg-card-hover);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-family: monospace;
+            white-space: nowrap;
         }
 
         .scan-toggle-btn {
@@ -589,35 +817,24 @@
             border: 1px solid var(--border-light);
             color: var(--text-primary);
             flex-shrink: 0;
-            margin-top: 12px;
+            margin-top: 10px;
             box-shadow: var(--shadow-sm);
         }
-
         .scan-toggle-btn:active {
             transform: scale(0.97);
         }
-
-        .scan-toggle-btn.open:active {
-            background: var(--bg-card-hover);
-        }
-
         .scan-toggle-btn.active-g1 {
             background: var(--gate1-bg);
             border-color: var(--gate1-primary);
             color: var(--gate1-primary);
         }
-
         .scan-toggle-btn.active-g2 {
             background: var(--gate2-bg);
             border-color: var(--gate2-primary);
             color: var(--gate2-primary);
         }
 
-        .scan-toggle-btn .icon {
-            font-size: 20px;
-        }
-
-        /* ───────────── TOAST / FLASH ───────────── */
+        /* ───────────── TOAST / FLASH / CHECKMARK ───────────── */
         .flash-overlay {
             position: fixed;
             inset: 0;
@@ -627,21 +844,40 @@
             opacity: 0;
             transition: opacity 0.08s ease;
         }
-
         .flash-overlay.show {
             opacity: 1;
         }
-
         .flash-overlay.green {
             background: rgba(184, 138, 75, 0.15);
         }
-
         .flash-overlay.gold {
-            background: rgba(143, 122, 92, 0.15);
+            background: rgba(59, 130, 246, 0.15);
         }
-
         .flash-overlay.red {
             background: rgba(190, 70, 50, 0.15);
+        }
+
+        .success-checkmark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: #2A6B3A;
+            color: #fff;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            z-index: 1000;
+            pointer-events: none;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .success-checkmark.show {
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .toast {
@@ -667,12 +903,10 @@
             align-items: center;
             gap: 12px;
         }
-
         .toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
-
         .toast .badge {
             display: inline-block;
             padding: 2px 14px;
@@ -682,114 +916,198 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
         .toast .badge.g1 {
             background: var(--gate1-bg);
             color: var(--gate1-primary);
             border: 1px solid rgba(184, 138, 75, 0.2);
         }
-
         .toast .badge.g2 {
             background: var(--gate2-bg);
             color: var(--gate2-primary);
-            border: 1px solid rgba(143, 122, 92, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
-
         .toast .badge.err {
             background: rgba(190, 70, 50, 0.08);
             color: #B4503C;
             border: 1px solid rgba(190, 70, 50, 0.15);
         }
 
-        /* ───────────── BOUNCE ───────────── */
-        @keyframes countBounce {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.2);
-            }
-
-            100% {
-                transform: scale(1);
-            }
+        /* ───────────── MODAL ───────────── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-box {
+            background: #fff;
+            padding: 28px;
+            border-radius: 20px;
+            max-width: 320px;
+            width: 90%;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
+            margin: 20px;
+        }
+        .modal-box h3 {
+            font-size: 18px;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+        .modal-box p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-actions button {
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .modal-actions .btn-cancel {
+            background: transparent;
+            color: var(--text-muted);
+        }
+        .modal-actions .btn-cancel:active {
+            background: var(--bg-card-hover);
+        }
+        .modal-actions .btn-danger {
+            background: #B4503C;
+            color: #fff;
+        }
+        .modal-actions .btn-danger:active {
+            transform: scale(0.95);
+            background: #9A3A2A;
         }
 
-        .bounce {
-            animation: countBounce 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
+        /* ───────────── RESPONSIVE ───────────── */
         @media (max-width: 420px) {
             #app {
                 padding: 12px 10px 16px;
             }
-
             .gate-card {
                 padding: 14px 16px;
-                min-height: 72px;
+                min-height: 68px;
             }
-
             .gate-card .gate-count {
-                font-size: 32px;
+                font-size: 30px;
             }
-
             .gate-card .action-btn {
                 font-size: 12px;
                 padding: 8px 12px;
-                min-width: 80px;
+                min-width: 70px;
             }
-
             .count-stats .main-count .num {
                 font-size: 32px;
             }
-
             .scan-toggle-btn {
                 font-size: 15px;
                 padding: 14px;
             }
-
             .total-display .number {
                 font-size: 22px;
             }
+            .header-content h1 {
+                font-size: 16px;
+            }
+            .stat-item .stat-number {
+                font-size: 22px;
+            }
+            .stats-row {
+                gap: 6px;
+            }
+            .stat-item {
+                padding: 8px 4px;
+            }
+            .recent-activity {
+                padding: 10px 12px;
+                min-height: 54px;
+            }
+            .recent-chip {
+                font-size: 10px;
+                padding: 3px 10px 3px 8px;
+            }
+            .recent-chip .time-tag {
+                font-size: 8px;
+            }
         }
-
         @media (max-height: 680px) {
             .gate-card {
-                min-height: 60px;
+                min-height: 56px;
                 padding: 10px 14px;
             }
-
             .gate-card .gate-count {
-                font-size: 26px;
+                font-size: 24px;
             }
-
             .count-stats {
                 padding: 8px 14px;
             }
-
             .count-stats .main-count .num {
                 font-size: 26px;
             }
-
             .scanner-wrapper {
-                min-height: 120px;
+                min-height: 100px;
+                max-height: 180px;
             }
-
             .app-header {
                 padding-bottom: 8px;
                 margin-bottom: 6px;
             }
-
             .gate-view-header {
                 padding-bottom: 8px;
                 margin-bottom: 8px;
+            }
+            .stat-item .stat-number {
+                font-size: 20px;
+            }
+            .stats-row {
+                gap: 4px;
+            }
+            .stat-item {
+                padding: 6px 4px;
+            }
+            .recent-activity {
+                min-height: 44px;
+                padding: 8px 12px;
+            }
+            .dashboard-grid {
+                gap: 8px;
+                padding: 2px 0 4px;
             }
         }
     </style>
 </head>
 
 <body>
+
+    <!-- ─── SUCCESS CHECKMARK ─── -->
+    <div class="success-checkmark" id="successCheck">✓</div>
+
+    <!-- ─── CUSTOM CONFIRM MODAL ─── -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-box">
+            <h3 id="modalTitle">Reset?</h3>
+            <p id="modalMessage">This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" id="modalCancel">Cancel</button>
+                <button class="btn-danger" id="modalConfirm">Reset</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ─── FLASH / TOAST ─── -->
     <div class="flash-overlay" id="flashOverlay"></div>
@@ -802,38 +1120,67 @@
         <div id="dashboard-view" class="view active">
             <header class="app-header">
                 <div class="logo-wrapper">
-                    <!-- ✅ Using your uploaded logo.png -->
                     <img src="logo.png" alt="Gold Squirrel Studio" />
                 </div>
-                <div class="header-text">
+                <div class="header-content">
                     <h1>Gold Squirrel <span class="brand-gold">Studio</span></h1>
-                    <div class="sub">Event Entry · Live Counter</div>
+                    <div class="sub">
+                        <span>Event Entry · <span id="headerDate"></span></span>
+                        <span class="header-badge" id="onlineBadge">● Online</span>
+                        <span class="header-badge pending" id="pendingBadge" style="display:none;">0 pending</span>
+                    </div>
                 </div>
             </header>
 
             <div class="dashboard-grid">
+                <!-- ─── NEW: Stats Row ─── -->
+                <div class="stats-row" id="statsRow">
+                    <div class="stat-item" id="statTotalItem">
+                        <span class="stat-number" id="statTotal">0</span>
+                        <span class="stat-label">Total</span>
+                        <span class="stat-sub" id="statTotalSub">today</span>
+                    </div>
+                    <div class="stat-item" id="statGate1Item">
+                        <span class="stat-number g1" id="statGate1">0</span>
+                        <span class="stat-label">Gate 1</span>
+                        <span class="stat-sub" id="statGate1Sub">entries</span>
+                    </div>
+                    <div class="stat-item" id="statGate2Item">
+                        <span class="stat-number g2" id="statGate2">0</span>
+                        <span class="stat-label">Gate 2</span>
+                        <span class="stat-sub" id="statGate2Sub">entries</span>
+                    </div>
+                </div>
+
                 <!-- Gate 1 Card -->
-                <div class="gate-card gate-1">
+                <div class="gate-card gate-1" data-gate="1">
                     <div class="info">
                         <div class="gate-label">🚪 Gate 1</div>
                         <div class="gate-count" id="dash-count-1">0</div>
                         <div class="gate-sub" id="dash-last-1">Last scan: —</div>
                     </div>
-                    <button class="action-btn" onclick="openGateView(1)">
-                        <span class="icon">📷</span> Open
-                    </button>
+                    <button class="action-btn">📷 Open</button>
                 </div>
 
                 <!-- Gate 2 Card -->
-                <div class="gate-card gate-2">
+                <div class="gate-card gate-2" data-gate="2">
                     <div class="info">
                         <div class="gate-label">🚪 Gate 2</div>
                         <div class="gate-count" id="dash-count-2">0</div>
                         <div class="gate-sub" id="dash-last-2">Last scan: —</div>
                     </div>
-                    <button class="action-btn" onclick="openGateView(2)">
-                        <span class="icon">📷</span> Open
-                    </button>
+                    <button class="action-btn">📷 Open</button>
+                </div>
+
+                <!-- ─── NEW: Recent Activity ─── -->
+                <div class="recent-activity" id="recentActivity">
+                    <div class="recent-header">
+                        <span>📋 Recent Check-ins</span>
+                        <span class="recent-count" id="recentCount">0</span>
+                    </div>
+                    <div class="recent-list" id="recentList">
+                        <span class="empty">No recent activity</span>
+                    </div>
                 </div>
             </div>
 
@@ -842,8 +1189,7 @@
                     <span class="label">Total</span>
                     <span class="number" id="dash-total">0</span>
                 </div>
-                <span class="status-badge" id="onlineBadge">● Online</span>
-                <button class="reset-all-btn" onclick="resetAll()">⟳ Reset</button>
+                <button class="menu-btn" id="menuBtn" title="Menu">⋮</button>
             </div>
         </div>
 
@@ -866,65 +1212,90 @@
                 </div>
             </div>
 
-            <div class="scanner-wrapper" id="scannerWrapper">
-                <div id="scanner-container"></div>
-                <div class="scanner-overlay">
-                    <div class="corner tl"></div>
-                    <div class="corner tr"></div>
-                    <div class="corner bl"></div>
-                    <div class="corner br"></div>
-                </div>
-                <div class="scanner-placeholder" id="scannerPlaceholder">
-                    <span class="big-icon">📷</span>
-                    <span>Camera is off</span>
-                    <span class="sub">Tap "Open Camera" below</span>
-                </div>
-            </div>
+            <div class="scanner-section">
+                <div class="scanner-wrapper" id="scannerWrapper">
+                    <div id="scanner-container"></div>
 
-            <button class="scan-toggle-btn open" id="scanToggleBtn" onclick="toggleScanner()">
-                <span class="icon">📷</span> Open Camera
-            </button>
+                    <div class="scanner-overlay" id="scannerOverlay">
+                        <div class="corner tl"></div>
+                        <div class="corner tr"></div>
+                        <div class="corner bl"></div>
+                        <div class="corner br"></div>
+                        <div class="scan-line"></div>
+                    </div>
+
+                    <div class="scanner-placeholder" id="scannerPlaceholder">
+                        <span class="big-icon">📷</span>
+                        <span>Camera is off</span>
+                        <span class="sub">Tap "Open Camera" below</span>
+                    </div>
+                </div>
+
+                <!-- Visitor Timeline -->
+                <div class="visitor-timeline">
+                    <span class="label">Recent</span>
+                    <div class="list" id="visitorList">
+                        <span style="color:var(--text-muted); font-size:12px;">—</span>
+                    </div>
+                </div>
+
+                <button class="scan-toggle-btn open" id="scanToggleBtn" onclick="toggleScanner()">
+                    <span class="icon">📷</span> Open Camera
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- ─── SINGLE MERGED SCRIPT BLOCK ─── -->
     <script>
         /* ──────────────────────────────────────────────────────────
-           STATE — now with central‑backend ready logic.
-           Duplicate prevention: QR‑based, not gate‑based.
+           STATE
            ────────────────────────────────────────────────────────── */
         let gate1Count = parseInt(localStorage.getItem('event_gate1') || '0');
         let gate2Count = parseInt(localStorage.getItem('event_gate2') || '0');
 
-        // Last scan data (per gate for UI)
         let lastScans = {
             1: { qr: localStorage.getItem('event_lastQR_1') || null, time: localStorage.getItem('event_lastTime_1') || null },
             2: { qr: localStorage.getItem('event_lastQR_2') || null, time: localStorage.getItem('event_lastTime_2') || null }
         };
 
-        // Global scanned set (QR‑based, not gate‑based)
-        let scannedSet = new Set();
+        // ─── Recent Activity History (for dashboard) ───
+        let recentActivity = [];
+        function loadRecentActivity() {
+            const stored = localStorage.getItem('event_recent_activity');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed)) recentActivity = parsed;
+                } catch (_) {}
+            }
+        }
+        loadRecentActivity();
+        function persistRecentActivity() {
+            localStorage.setItem('event_recent_activity', JSON.stringify(recentActivity));
+        }
 
-        // Load previously scanned QR codes from localStorage (global)
+        // ─── Global scanned set (dedupe) ───
+        let scannedSet = new Set();
         function loadGlobalScanned() {
             const stored = localStorage.getItem('global_scanned_qrs');
             if (stored) {
-                try {
-                    const arr = JSON.parse(stored);
-                    arr.forEach(qr => scannedSet.add(qr));
-                } catch (_) { }
+                try { const arr = JSON.parse(stored); arr.forEach(qr => scannedSet.add(qr)); } catch (_) {}
             }
         }
         loadGlobalScanned();
-
         function persistGlobalScanned() {
             localStorage.setItem('global_scanned_qrs', JSON.stringify(Array.from(scannedSet)));
         }
+
+        // ─── Timeline for gate view ───
+        let scanTimeline = [];
 
         let currentGate = 1;
         let isScannerRunning = false;
         let html5QrCode = null;
         let scanCooldown = false;
+        let pendingOfflineCount = 0;
 
         // DOM refs
         const $ = id => document.getElementById(id);
@@ -940,33 +1311,68 @@
         const lastQRId = $('lastQRId');
         const lastQRTime = $('lastQRTime');
         const scannerPlaceholder = $('scannerPlaceholder');
+        const scannerOverlay = $('scannerOverlay');
         const scanToggleBtn = $('scanToggleBtn');
         const flashOverlay = $('flashOverlay');
         const toast = $('toast');
         const onlineBadge = $('onlineBadge');
+        const pendingBadge = $('pendingBadge');
+        const visitorList = $('visitorList');
+        const successCheck = $('successCheck');
+        const headerDate = $('headerDate');
+
+        // New dashboard elements
+        const statTotal = $('statTotal');
+        const statGate1 = $('statGate1');
+        const statGate2 = $('statGate2');
+        const statTotalSub = $('statTotalSub');
+        const statGate1Sub = $('statGate1Sub');
+        const statGate2Sub = $('statGate2Sub');
+        const recentList = $('recentList');
+        const recentCount = $('recentCount');
+        const statGate1Item = $('statGate1Item');
+        const statGate2Item = $('statGate2Item');
+
+        // ─── INIT DATE ───
+        const now = new Date();
+        headerDate.textContent = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
         // ─── UI UPDATE ───
         function updateAllUI() {
+            // Gate counts
             dashCount1.textContent = gate1Count;
             dashCount2.textContent = gate2Count;
             dashTotal.textContent = gate1Count + gate2Count;
 
-            const fmtTime = (ts) => ts ? new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+            // Stats row
+            statTotal.textContent = gate1Count + gate2Count;
+            statGate1.textContent = gate1Count;
+            statGate2.textContent = gate2Count;
+
+            // Highlight stat if gate has entries
+            statGate1Item.classList.toggle('highlight-g1', gate1Count > 0);
+            statGate2Item.classList.toggle('highlight-g2', gate2Count > 0);
+
+            // Last scans
+            const fmtTime = (ts) => ts ? new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit',
+                second: '2-digit' }) : '—';
             dashLast1.textContent = `Last scan: ${lastScans[1].qr ? fmtTime(lastScans[1].time) : '—'}`;
             dashLast2.textContent = `Last scan: ${lastScans[2].qr ? fmtTime(lastScans[2].time) : '—'}`;
 
+            // Gate view count
             const count = currentGate === 1 ? gate1Count : gate2Count;
             gateCountNum.textContent = count;
             gateCountNum.className = 'num ' + (currentGate === 1 ? 'g1' : 'g2');
 
             const last = lastScans[currentGate];
             lastQRId.textContent = last.qr || '—';
-            lastQRTime.textContent = last.time ? new Date(last.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'No scans yet';
+            lastQRTime.textContent = last.time ? new Date(last.time).toLocaleTimeString([], { hour: '2-digit',
+                minute: '2-digit', second: '2-digit' }) : 'No scans yet';
 
             gateTitleNum.textContent = currentGate;
             gateTitleNum.className = currentGate === 1 ? 'g1' : 'g2';
 
-            // Persist counters & last scan
+            // Persist
             localStorage.setItem('event_gate1', String(gate1Count));
             localStorage.setItem('event_gate2', String(gate2Count));
             localStorage.setItem('event_lastQR_1', lastScans[1].qr || '');
@@ -974,10 +1380,19 @@
             localStorage.setItem('event_lastQR_2', lastScans[2].qr || '');
             localStorage.setItem('event_lastTime_2', lastScans[2].time || '');
 
-            // Online badge (simulated, can be toggled manually for demo)
-            // we keep it always online for frontend demo
             onlineBadge.textContent = '● Online';
-            onlineBadge.className = 'status-badge';
+            onlineBadge.className = 'header-badge';
+
+            // Pending badge
+            if (pendingOfflineCount > 0) {
+                pendingBadge.style.display = 'inline';
+                pendingBadge.textContent = `${pendingOfflineCount} pending`;
+            } else {
+                pendingBadge.style.display = 'none';
+            }
+
+            // Recent activity
+            renderRecentActivity();
         }
 
         function bounceCount() {
@@ -986,17 +1401,55 @@
             gateCountNum.classList.add('bounce');
         }
 
+        // ─── RECENT ACTIVITY RENDER ───
+        function renderRecentActivity() {
+            const list = recentList;
+            const count = recentCount;
+            count.textContent = recentActivity.length;
+
+            if (recentActivity.length === 0) {
+                list.innerHTML = '<span class="empty">No recent activity</span>';
+                return;
+            }
+
+            // Show last 6
+            const items = recentActivity.slice(0, 6);
+            list.innerHTML = '';
+            items.forEach(entry => {
+                const chip = document.createElement('span');
+                chip.className = 'recent-chip';
+                const dot = document.createElement('span');
+                dot.className = `dot g${entry.gate}`;
+                const qrShort = entry.qr.length > 8 ? entry.qr.substring(0, 8) : entry.qr;
+                const timeStr = entry.time ? new Date(entry.time).toLocaleTimeString([], { hour: '2-digit',
+                    minute: '2-digit' }) : '';
+                chip.innerHTML = '';
+                chip.appendChild(dot);
+                const text = document.createTextNode(qrShort);
+                chip.appendChild(text);
+                if (timeStr) {
+                    const tag = document.createElement('span');
+                    tag.className = 'time-tag';
+                    tag.textContent = timeStr;
+                    chip.appendChild(tag);
+                }
+                list.appendChild(chip);
+            });
+        }
+
         // ─── NAVIGATION ───
         function openGateView(gate) {
             if (isScannerRunning) stopScannerSync();
             currentGate = gate;
             scannerPlaceholder.classList.remove('hidden');
+            scannerOverlay.classList.remove('active');
             scanToggleBtn.innerHTML = '<span class="icon">📷</span> Open Camera';
             scanToggleBtn.className = 'scan-toggle-btn open';
 
             dashView.classList.remove('active');
             gateView.classList.add('active');
             updateAllUI();
+            renderTimeline();
         }
 
         function closeGateView() {
@@ -1004,6 +1457,42 @@
             gateView.classList.remove('active');
             dashView.classList.add('active');
             updateAllUI();
+        }
+
+        // ─── CLICKABLE CARDS ───
+        document.querySelectorAll('.gate-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('.action-btn')) return;
+                const gate = parseInt(card.dataset.gate);
+                openGateView(gate);
+            });
+        });
+
+        // ─── MENU BUTTON ───
+        document.getElementById('menuBtn').addEventListener('click', async () => {
+            const confirmed = await showConfirmModal('Reset Everything?', 'This will clear all counters, history, and the global scan log. Cannot be undone.');
+            if (confirmed) resetAll();
+        });
+
+        // ─── CUSTOM CONFIRM MODAL ───
+        function showConfirmModal(title, message) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirmModal');
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalMessage').textContent = message;
+                modal.style.display = 'flex';
+
+                const confirmBtn = document.getElementById('modalConfirm');
+                const cancelBtn = document.getElementById('modalCancel');
+
+                const cleanup = () => { modal.style.display = 'none'; };
+                confirmBtn.onclick = () => { cleanup();
+                    resolve(true); };
+                cancelBtn.onclick = () => { cleanup();
+                    resolve(false); };
+                modal.onclick = (e) => { if (e.target === modal) { cleanup();
+                        resolve(false); } };
+            });
         }
 
         // ─── SCANNER ───
@@ -1025,6 +1514,7 @@
                 await html5QrCode.start({ facingMode: 'environment' }, config, onScanSuccess, onScanError);
                 isScannerRunning = true;
                 scannerPlaceholder.classList.add('hidden');
+                scannerOverlay.classList.add('active');
 
                 const gateClass = currentGate === 1 ? 'active-g1' : 'active-g2';
                 scanToggleBtn.innerHTML = '<span class="icon">⏹</span> Close Camera';
@@ -1039,48 +1529,60 @@
 
         function stopScannerSync() {
             if (html5QrCode && isScannerRunning) {
-                try { html5QrCode.stop(); html5QrCode.clear(); } catch (_) { }
+                try { html5QrCode.stop();
+                    html5QrCode.clear(); } catch (_) {}
                 isScannerRunning = false;
                 scannerPlaceholder.classList.remove('hidden');
+                scannerOverlay.classList.remove('active');
                 scanToggleBtn.innerHTML = '<span class="icon">📷</span> Open Camera';
                 scanToggleBtn.className = 'scan-toggle-btn open';
             }
         }
 
-        // ─── SCAN HANDLER (backend‑ready) ───
+        // ─── SCAN HANDLER ───
         function onScanSuccess(decodedText, decodedResult) {
             if (scanCooldown) return;
             scanCooldown = true;
 
             const qr = decodedText.trim();
 
-            // ---- GLOBAL duplicate check (QR‑based, not gate‑based) ----
             if (scannedSet.has(qr)) {
                 flashScreen('red');
-                showToast('Already scanned (global)', 'err', 1200);
+                showToast('⛔ Duplicate entry', 'err', 2000);
                 scanCooldown = false;
                 setTimeout(() => { scanCooldown = false; }, 300);
                 return;
             }
 
-            // ---- Valid scan: increment gate counter ----
+            // Update counters
             if (currentGate === 1) gate1Count++;
             else gate2Count++;
 
-            // Add to global set & persist
             scannedSet.add(qr);
             persistGlobalScanned();
 
-            // Update last scan
-            lastScans[currentGate] = { qr: qr, time: new Date().toISOString() };
+            const nowISO = new Date().toISOString();
+            lastScans[currentGate] = { qr: qr, time: nowISO };
+
+            // Add to recent activity
+            recentActivity.unshift({ qr: qr, gate: currentGate, time: nowISO });
+            if (recentActivity.length > 20) recentActivity.pop();
+            persistRecentActivity();
+
+            // Update timeline (gate view)
+            scanTimeline.unshift(qr.substring(0, 8));
+            if (scanTimeline.length > 3) scanTimeline.pop();
+            renderTimeline();
 
             updateAllUI();
             bounceCount();
             flashScreen(currentGate);
             if (navigator.vibrate) navigator.vibrate(30);
+
+            showSuccessCheckmark();
             showToast('✓ Entry recorded', currentGate, 900);
 
-            // Auto‑close camera after scan (operator flow)
+            // Auto-close camera after successful scan (optional)
             setTimeout(() => {
                 if (isScannerRunning) {
                     stopScannerSync();
@@ -1093,32 +1595,65 @@
 
         function onScanError(err) { /* ignore */ }
 
+        // ─── TIMELINE RENDER (gate view) ───
+        function renderTimeline() {
+            visitorList.innerHTML = '';
+            if (scanTimeline.length === 0) {
+                visitorList.innerHTML = '<span style="color:var(--text-muted); font-size:12px;">—</span>';
+                return;
+            }
+            scanTimeline.forEach(qr => {
+                const el = document.createElement('span');
+                el.className = 'item';
+                el.textContent = qr;
+                visitorList.appendChild(el);
+            });
+        }
+
+        // ─── SUCCESS CHECKMARK ───
+        function showSuccessCheckmark() {
+            const el = successCheck;
+            el.classList.remove('show');
+            void el.offsetWidth;
+            el.classList.add('show');
+            clearTimeout(el._timer);
+            el._timer = setTimeout(() => el.classList.remove('show'), 600);
+        }
+
         // ─── RESET ───
-        function resetCurrentGate() {
+        async function resetCurrentGate() {
             const count = currentGate === 1 ? gate1Count : gate2Count;
             if (count === 0) return;
-            if (!confirm(`Reset Gate ${currentGate} counter?`)) return;
+
+            const confirmed = await showConfirmModal(`Reset Gate ${currentGate}?`, `This will reset the counter for Gate ${currentGate} and clear its last scan.`);
+            if (!confirmed) return;
 
             if (currentGate === 1) gate1Count = 0;
             else gate2Count = 0;
 
-            // For gate reset we keep global scanned set, but we could also clear?
-            // We keep global set untouched to preserve duplicate prevention.
             lastScans[currentGate] = { qr: null, time: null };
+            // Also remove this gate's entries from recent activity
+            recentActivity = recentActivity.filter(e => e.gate !== currentGate);
+            persistRecentActivity();
+
             updateAllUI();
+            renderTimeline();
             showToast(`Gate ${currentGate} reset`, currentGate, 1000);
             if (navigator.vibrate) navigator.vibrate(20);
         }
 
         function resetAll() {
-            if (gate1Count === 0 && gate2Count === 0 && scannedSet.size === 0) return;
-            if (!confirm('Reset ALL counters AND clear global scan history?')) return;
+            if (gate1Count === 0 && gate2Count === 0 && scannedSet.size === 0 && recentActivity.length === 0) return;
 
             gate1Count = 0;
             gate2Count = 0;
             lastScans = { 1: { qr: null, time: null }, 2: { qr: null, time: null } };
             scannedSet.clear();
             persistGlobalScanned();
+            recentActivity = [];
+            persistRecentActivity();
+            scanTimeline = [];
+            renderTimeline();
             updateAllUI();
             showToast('All counters & history reset', null, 1200);
             if (navigator.vibrate) navigator.vibrate(30);
@@ -1142,10 +1677,10 @@
             if (badgeType) {
                 const b = document.createElement('span');
                 b.className = 'badge ' + (badgeType === 'err' ? 'err' : `g${badgeType}`);
-                b.textContent = badgeType === 'err' ? '⛔ Duplicate' : `Gate ${badgeType}`;
+                b.textContent = badgeType === 'err' ? '⛔' : `Gate ${badgeType}`;
                 toast.appendChild(b);
             }
-            const text = document.createTextNode(message);
+            const text = document.createTextNode(' ' + message);
             toast.appendChild(text);
             toast.classList.add('show');
             clearTimeout(toast._hideTimer);
@@ -1154,32 +1689,29 @@
 
         // ─── KEYBOARD ───
         document.addEventListener('keydown', (e) => {
-            if (e.key === '1') { if (dashView.classList.contains('active')) openGateView(1); }
-            else if (e.key === '2') { if (dashView.classList.contains('active')) openGateView(2); }
-            else if (e.key === 'Escape') { if (gateView.classList.contains('active')) closeGateView(); }
-            else if (e.key === ' ' || e.key === 'Space') { if (gateView.classList.contains('active')) { e.preventDefault(); toggleScanner(); } }
+            if (e.key === '1') { if (dashView.classList.contains('active')) openGateView(1); } else if (e.key ===
+                '2') { if (dashView.classList.contains('active')) openGateView(2); } else if (e.key === 'Escape') { if (
+                    gateView.classList.contains('active')) closeGateView(); } else if (e.key === ' ' || e.key ===
+                'Space') { if (gateView.classList.contains('active')) { e.preventDefault();
+                    toggleScanner(); } }
         });
 
         // ─── INIT ───
         updateAllUI();
-        console.log(`🐿️ Gold Squirrel Event Scanner ready. Gate1: ${gate1Count}, Gate2: ${gate2Count}, global unique: ${scannedSet.size}`);
+        renderTimeline();
+        console.log(`🐿️ Gold Squirrel Event Scanner ready. Gate1: ${gate1Count}, Gate2: ${gate2Count}, global unique: ${scannedSet.size}, recent: ${recentActivity.length}`);
 
         window.addEventListener('beforeunload', () => {
             if (html5QrCode && isScannerRunning) {
-                try { html5QrCode.stop(); } catch (_) { }
+                try { html5QrCode.stop(); } catch (_) {}
             }
         });
 
-        // ─── Register Service Worker (merged into one script) ───
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then((reg) => {
-                        console.log('✅ Service Worker registered! Scope:', reg.scope);
-                    })
-                    .catch((err) => {
-                        console.log('❌ Service Worker registration failed:', err);
-                    });
+                    .then((reg) => { console.log('✅ Service Worker registered! Scope:', reg.scope); })
+                    .catch((err) => { console.log('❌ Service Worker registration failed:', err); });
             });
         }
     </script>
